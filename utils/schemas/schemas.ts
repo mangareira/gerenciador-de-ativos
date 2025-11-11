@@ -159,3 +159,12 @@ export const UpdateAssetSchema = z.object({
   lastMaintenanceDate: z.coerce.date().nullable().optional(),
 });
 export type UpdateAsset = z.infer<typeof UpdateAssetSchema>;
+
+// ============================================
+// ASSET WITH RELATIONS
+// ============================================
+
+export type AssetWithRelations = Omit<Asset, 'departmentId' | 'assignedToId'> & {
+  department: Department;
+  assignedTo: User | null;
+};

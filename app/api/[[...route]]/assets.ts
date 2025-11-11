@@ -4,6 +4,23 @@ import { zValidator } from "@hono/zod-validator";
 import { prisma } from "@/lib/prisma";
 
 const app = new Hono()
+  .get('/get-assets', async (c) => {
+    try {
+      const assets = await prisma.asset.findMany({
+        include: {
+          department: true,
+          assignedTo: true,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+
+      return c.json({ assets });
+    } catch {
+      return c.json({ error: "Erro ao buscar ativos" }, 500);
+    }
+  })
   .post('/create',
     zValidator("json", 
       CreateAssetSchema,

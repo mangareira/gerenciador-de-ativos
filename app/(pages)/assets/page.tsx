@@ -1,10 +1,16 @@
+'use client'
+import AssetsCard from "@/components/assetsCard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useGetAssets } from "@/utils/hooks/assets/useGetAssets";
 import { Filter, Plus, Search } from "lucide-react";
 
 export default function AssetsPage() {
+
+  const { data: assets, isLoading } = useGetAssets();
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -59,6 +65,11 @@ export default function AssetsPage() {
           </div>
         </CardContent>
       </Card>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {assets?.map((asset) => (
+          <AssetsCard key={asset.id} asset={asset} />
+        ))}
+      </div>
     </div>
   )
 }

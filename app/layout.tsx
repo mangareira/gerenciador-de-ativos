@@ -4,6 +4,8 @@ import "./globals.css";
 import { Sidebar } from "@/components/Sidebar";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { Header } from "@/components/Header";
+import { QueryProvider } from "@/providers/query-provider";
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -22,18 +24,21 @@ export default function RootLayout({
       <body
         className={`${inter.className} antialiased flex h-screen overflow-hidden`}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <Sidebar />
-          <div className="flex flex-1 flex-col overflow-hidden">
-            <Header />
-            <main className="flex-1 overflow-y-auto bg-muted/30 p-6">{children}</main>
-          </div>
-        </ThemeProvider>
+        <QueryProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <Sidebar />
+            <div className="flex flex-1 flex-col overflow-hidden">
+              <Header />
+              <main className="flex-1 overflow-y-auto bg-muted/30 p-6">{children}</main>
+              <Toaster />
+            </div>
+          </ThemeProvider>
+        </QueryProvider>
       </body>
     </html>
   );
