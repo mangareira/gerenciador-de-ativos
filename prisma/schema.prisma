@@ -1,0 +1,96 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  admin
+  manager
+  technician
+  user
+}
+
+model User {
+  id         String   @id @default(cuid())
+  name       String
+  email      String   @unique
+  role       UserRole
+  department String
+  avatar     String?
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relations
+  managedDepartments Department[] @relation("DepartmentManager")
+  assignedAssets     Asset[]      @relation("AssetAssignment")
+
+  @@map("users")
+}
+
+model Department {
+  id         String @id @default(cuid())
+  name       String
+  costCenter String
+  managerId  String
+  location   String
+
+  // Relations
+  manager User    @relation("DepartmentManager", fields: [managerId], references: [id])
+  assets  Asset[]
+
+  @@map("departments")
+}
+
+enum AssetType {
+  desktop
+  laptop
+  server
+  network
+  mobile
+  printer
+  other
+}
+
+enum AssetStatus {
+  available
+  in_use
+  maintenance
+  retired
+  lost
+}
+
+model Asset {
+  id                  String      @id @default(cuid())
+  name                String
+  type                AssetType
+  status              AssetStatus
+  serialNumber        String      @unique
+  manufacturer        String
+  model               String
+  purchaseDate        DateTime
+  warrantyExpiry      DateTime
+  purchasePrice       Float
+  currentValue        Float
+  departmentId        String
+  assignedToId        String?
+  location            String
+  specifications      Json
+  notes               String?
+  lastMaintenanceDate DateTime?
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
+
+  // Relations
+  department Department @relation(fields: [departmentId], references: [id])
+  assignedTo User?      @relation("AssetAssignment", fields: [assignedToId], references: [id])
+
+  @@map("assets")
+}
