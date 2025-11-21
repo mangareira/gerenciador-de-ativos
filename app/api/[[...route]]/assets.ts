@@ -27,7 +27,7 @@ const app = new Hono()
     ) , 
     async (c) => {
       const values = c.req.valid("json");
-      
+
       const asset = await prisma.asset.create({
         data: values,
       });

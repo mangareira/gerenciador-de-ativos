@@ -23,5 +23,21 @@ const app = new Hono()
       return c.json({ department });
     }
   )
+  .get(
+    '/get-departments', 
+    async (c) => {
+      try {
+        const departments = await prisma.department.findMany({
+          orderBy: {
+            name: 'asc',
+          },
+        });
+
+        return c.json({ departments });
+      } catch {
+        return c.json({ error: "Erro ao buscar departamentos" }, 500);
+      }
+    }
+  )
 
 export default app

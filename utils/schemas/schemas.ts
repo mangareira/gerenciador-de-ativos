@@ -123,20 +123,20 @@ export type Asset = z.infer<typeof AssetSchema>;
 export const CreateAssetSchema = z.object({
   name: z.string().min(1, "Nome é obrigatório"),
   type: AssetTypeSchema,
-  status: AssetStatusSchema.default("available"),
+  status: AssetStatusSchema,
   serialNumber: z.string().min(1, "Número de série é obrigatório"),
   manufacturer: z.string().min(1, "Fabricante é obrigatório"),
   model: z.string().min(1, "Modelo é obrigatório"),
-  purchaseDate: z.coerce.date(),
-  warrantyExpiry: z.coerce.date(),
+  purchaseDate: z.union([z.date(), z.string()]),
+  warrantyExpiry: z.union([z.date(), z.string()]),
   purchasePrice: z.number().positive("Preço de compra deve ser positivo"),
   currentValue: z.number().nonnegative("Valor atual deve ser não-negativo"),
   departmentId: z.cuid(),
   assignedToId: z.cuid().nullable().optional(),
   location: z.string().min(1, "Localização é obrigatória"),
-  specifications: z.record(z.string(), z.any()).default({}),
+  specifications: z.record(z.string(), z.any()),
   notes: z.string().nullable().optional(),
-  lastMaintenanceDate: z.coerce.date().nullable().optional(),
+  lastMaintenanceDate: z.date().nullable().optional(),
 });
 export type CreateAsset = z.infer<typeof CreateAssetSchema>;
 
@@ -147,8 +147,8 @@ export const UpdateAssetSchema = z.object({
   serialNumber: z.string().min(1, "Número de série é obrigatório").optional(),
   manufacturer: z.string().min(1, "Fabricante é obrigatório").optional(),
   model: z.string().min(1, "Modelo é obrigatório").optional(),
-  purchaseDate: z.coerce.date().optional(),
-  warrantyExpiry: z.coerce.date().optional(),
+  purchaseDate: z.union([z.date(), z.string()]).optional(),
+  warrantyExpiry: z.union([z.date(), z.string()]).optional(),
   purchasePrice: z.number().positive("Preço de compra deve ser positivo").optional(),
   currentValue: z.number().nonnegative("Valor atual deve ser não-negativo").optional(),
   departmentId: z.cuid().optional(),
@@ -156,7 +156,7 @@ export const UpdateAssetSchema = z.object({
   location: z.string().min(1, "Localização é obrigatória").optional(),
   specifications: z.record(z.string(), z.any()).optional(),
   notes: z.string().nullable().optional(),
-  lastMaintenanceDate: z.coerce.date().nullable().optional(),
+  lastMaintenanceDate: z.date().nullable().optional(),
 });
 export type UpdateAsset = z.infer<typeof UpdateAssetSchema>;
 

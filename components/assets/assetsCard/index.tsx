@@ -1,11 +1,11 @@
 import { AssetWithRelations } from "@/utils/schemas/schemas";
-import { Card, CardContent } from "../ui/card";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
-import { Button } from "../ui/button";
+import { Card, CardContent } from "../../ui/card";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../../ui/dropdown-menu";
+import { Button } from "../../ui/button";
 import { Laptop, MoreVertical, Network, Package, Printer, Server, Smartphone } from "lucide-react";
 import Link from "next/link";
 import { formatCurrency, getAssetStatusColor, getStatusLabel } from "@/lib/utils";
-import { Badge } from "../ui/badge";
+import { Badge } from "../../ui/badge";
 
 const assetIcons = {
   desktop: Package,
