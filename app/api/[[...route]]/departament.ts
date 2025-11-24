@@ -1,7 +1,7 @@
 import { Hono } from "hono";
-import { CreateDepartmentSchema } from "@/utils/schemas/schemas";
 import { zValidator } from "@hono/zod-validator";
 import { prisma } from "@/lib/prisma";
+import { CreateDepartmentSchema } from "@/utils/schemas/department.schemas";
 
 const app = new Hono()
   .post(

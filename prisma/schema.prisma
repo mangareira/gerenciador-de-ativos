@@ -29,8 +29,11 @@ model User {
   updatedAt  DateTime @updatedAt
 
   // Relations
-  managedDepartments Department[] @relation("DepartmentManager")
-  assignedAssets     Asset[]      @relation("AssetAssignment")
+  managedDepartments Department[]    @relation("DepartmentManager")
+  assignedAssets     Asset[]         @relation("AssetAssignment")
+  movementsFrom      AssetMovement[] @relation("MovementFromUser")
+  movementsTo        AssetMovement[] @relation("MovementToUser")
+  movementTechnician AssetMovement[] @relation("MovementTechnician")
 
   @@map("users")
 }
@@ -89,8 +92,39 @@ model Asset {
   updatedAt           DateTime    @updatedAt
 
   // Relations
-  department Department @relation(fields: [departmentId], references: [id])
-  assignedTo User?      @relation("AssetAssignment", fields: [assignedToId], references: [id])
+  department Department      @relation(fields: [departmentId], references: [id])
+  assignedTo User?           @relation("AssetAssignment", fields: [assignedToId], references: [id])
+  movements  AssetMovement[]
 
   @@map("assets")
+}
+
+enum AssetMovementType {
+  allocation
+  maintenance
+  transfer
+  creation
+}
+
+model AssetMovement {
+  id           String            @id @default(cuid())
+  type         AssetMovementType
+  assetId      String
+  fromUserId   String?
+  toUserId     String?
+  technicianId String?
+  fromLocation String
+  toLocation   String?
+  movementDate DateTime
+  reason       String
+  authorizedBy String
+  notes        String?
+
+  // Relations
+  asset      Asset @relation(fields: [assetId], references: [id])
+  fromUser   User? @relation("MovementFromUser", fields: [fromUserId], references: [id])
+  toUser     User? @relation("MovementToUser", fields: [toUserId], references: [id])
+  technician User? @relation("MovementTechnician", fields: [technicianId], references: [id])
+
+  @@map("asset_movements")
 }

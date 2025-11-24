@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { CreateUserSchema } from "@/utils/schemas/schemas";
+import { CreateUserSchema } from "@/utils/schemas/user.schemas";
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 

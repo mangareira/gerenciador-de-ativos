@@ -1,4 +1,3 @@
-import { AssetWithRelations } from "@/utils/schemas/schemas";
 import { Card, CardContent } from "../../ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../../ui/dropdown-menu";
 import { Button } from "../../ui/button";
@@ -6,6 +5,7 @@ import { Laptop, MoreVertical, Network, Package, Printer, Server, Smartphone } f
 import Link from "next/link";
 import { formatCurrency, getAssetStatusColor, getStatusLabel } from "@/lib/utils";
 import { Badge } from "../../ui/badge";
+import { AssetWithRelations } from "@/utils/schemas/assets.schemas";
 
 const assetIcons = {
   desktop: Package,
@@ -43,7 +43,9 @@ export default function AssetsCard({ asset }: { asset: AssetWithRelations }) {
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Ações</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Ver Detalhes</DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href={`/assets/${asset.id}`}>Ver Detalhes</Link>
+              </DropdownMenuItem>
               <DropdownMenuItem>Editar</DropdownMenuItem>
               <DropdownMenuItem>Mover/Alocar</DropdownMenuItem>
               <DropdownMenuItem>Histórico</DropdownMenuItem>

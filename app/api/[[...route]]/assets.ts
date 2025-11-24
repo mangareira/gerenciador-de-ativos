@@ -1,7 +1,9 @@
 import { Hono } from "hono";
-import { CreateAssetSchema } from "@/utils/schemas/schemas";
 import { zValidator } from "@hono/zod-validator";
 import { prisma } from "@/lib/prisma";
+import { z } from "zod";
+import { CreateAssetSchema } from "@/utils/schemas/assets.schemas";
+import { CreateAssetMovementSchema } from "@/utils/schemas/assetsMovementHistory.schemas";
 
 const app = new Hono()
   .get('/get-assets', async (c) => {
@@ -21,6 +23,41 @@ const app = new Hono()
       return c.json({ error: "Erro ao buscar ativos" }, 500);
     }
   })
+  .get(
+    '/get-assets/:id',
+    zValidator("param", 
+      z.object({
+        id: z.string(),
+      }),
+    ) ,
+    async (c) => {
+      const id = c.req.param("id");
+
+      const asset = await prisma.asset.findUnique({
+        where: {
+          id,
+        },
+        include: {
+          department: true,
+          assignedTo: true,
+          movements: {
+            orderBy: {
+              movementDate: "desc"
+            }
+          }
+        },
+      });
+
+      if(!asset) {
+        return c.json({ error: "Ativo nao encontrado" }, 404);
+      }
+
+      return c.json({ asset: {
+        ...asset,
+        specifications: asset.specifications || {},
+      } });
+    }
+  )
   .post('/create',
     zValidator("json", 
       CreateAssetSchema,
@@ -33,10 +70,56 @@ const app = new Hono()
       });
 
       if(!asset) {
-        return c.json({ error: "Ativo nao criado" }, 500);
+        return c.json({ error: "Ativo nao criado" }, 400);
       }
 
       return c.json({ asset });
+    }
+   )
+   .get(
+    '/movement-history/:assetId',
+    zValidator(
+      "param",
+      z.object({
+        assetId: z.string()
+      })
+    ),
+    async (c) => {
+
+      const { assetId } = c.req.valid("param")
+
+      const movement = await prisma.assetMovement.findMany({
+        where: {
+          assetId,
+        },
+        include: {
+          fromUser: true,
+          technician: true,
+          toUser: true
+        }
+      })
+
+      if(!movement) return c.json({ error: "Historico nao encontrado" }, 404);
+
+      return c.json({ movement })
+    }
+   )
+   .post(
+    '/movement-history',
+    zValidator(
+      "json",
+      CreateAssetMovementSchema,
+    ),
+    async (c) => {
+      const values = c.req.valid("json")
+
+      const movement = await prisma.assetMovement.create({
+        data: values
+      })
+
+      if(!movement) return c.json({ error: "Movimento não criado" }, 400)
+
+      return c.json({ movement })
     }
    )
 

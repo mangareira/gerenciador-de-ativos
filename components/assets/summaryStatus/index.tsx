@@ -1,6 +1,6 @@
 import { formatCurrency } from "@/lib/utils";
-import { AssetWithRelations } from "@/utils/schemas/schemas";
 import { Card, CardContent } from "../../ui/card";
+import { AssetWithRelations } from "@/utils/schemas/assets.schemas";
 
 export default function SummaryStatus({ assets }: { assets: AssetWithRelations[] }) {
   return (

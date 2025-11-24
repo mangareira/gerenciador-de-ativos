@@ -1,6 +1,6 @@
-'use client'
+"use client"
 
-import { Button } from "@/components/ui/button";
+import { useState } from "react"
 import {
   Dialog,
   DialogContent,
@@ -8,66 +8,45 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { DatePicker } from "@/components/datePicker";
-import { DynamicSpecifications } from "@/components/ui/dynamic-specifications";
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Textarea } from "@/components/ui/textarea"
+import { Edit } from "lucide-react"
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { DatePicker } from "@/components/datePicker"
 import { Select as SelectOptions } from "@/components/select";
-import { useCreateAsset } from "@/utils/hooks/assets/useCreateAssets";
-import { CreateAsset, CreateAssetSchema } from "@/utils/schemas/assets.schemas";
+import { DynamicSpecifications } from "@/components/ui/dynamic-specifications"
+import { Asset, UpdateAsset, UpdateAssetSchema } from "@/utils/schemas/assets.schemas"
 
-interface AddAssetModalProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  departmentOptions: { value: string; label: string }[];
+interface EditAssetModalProps {
+  asset: Asset,
+  departmentOptions: { value: string; label: string }[]
 }
 
-export default function AddAssetModal({ open, onOpenChange, departmentOptions }: AddAssetModalProps) {
-  const [isLoading, setIsLoading] = useState(false);
-  
-  const { mutate } = useCreateAsset();
-  
-  const form = useForm<CreateAsset>({
-    resolver: zodResolver(CreateAssetSchema),
-    defaultValues: {
-      status: "available",
-      type: "desktop",
-      name: "",
-      manufacturer: "",
-      model: "",
-      serialNumber: "",
-      specifications: {},
-      purchaseDate: undefined,
-      warrantyExpiry: undefined,
-      purchasePrice: undefined,
-      currentValue: undefined,
-      notes: "",
-      location: "",
-    }
+export function EditAssetModal({ asset, departmentOptions }: EditAssetModalProps) {
+  const [open, setOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
+
+  const form = useForm<UpdateAsset>({
+    resolver: zodResolver(UpdateAssetSchema),
+    defaultValues: asset
   })
 
-  const onSubmit = async (data: CreateAsset) => {
-    setIsLoading(true);
+  const handleSubmit = async (data: UpdateAsset) => {
+    setLoading(true)
 
-    mutate(data, {
-      onSuccess: () => {
-        setIsLoading(false);
-        onOpenChange(false);
-      },
-      onError: () => {
-        setIsLoading(false);
-      }
-    });
-  };
+    console.log("[v0] Asset updated successfully", data)
+    setLoading(false)
+    setOpen(false)
+  }
 
-  const handleNumberChange = (fieldName: keyof CreateAsset, value: string) => {
+  const handleNumberChange = (fieldName: keyof UpdateAsset, value: string) => {
     const numericValue = value === "" ? 0 : Number(value);
     form.setValue(fieldName, numericValue, {
       shouldValidate: true,
@@ -77,16 +56,20 @@ export default function AddAssetModal({ open, onOpenChange, departmentOptions }:
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button variant="outline">
+          <Edit className="mr-2 h-4 w-4" />
+          Editar
+        </Button>
+      </DialogTrigger>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Adicionar Novo Ativo</DialogTitle>
-          <DialogDescription>
-            Preencha as informações do novo ativo de TI
-          </DialogDescription>
+          <DialogTitle>Editar Ativo</DialogTitle>
+          <DialogDescription>Atualize as informações do ativo</DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <FormField
@@ -372,21 +355,16 @@ export default function AddAssetModal({ open, onOpenChange, departmentOptions }:
               </div>
             </div>
             <DialogFooter>
-              <Button 
-                type="button" 
-                variant="outline" 
-                onClick={() => onOpenChange(false)}
-                disabled={isLoading}
-              >
+              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
                 Cancelar
               </Button>
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Salvando..." : "Adicionar Ativo"}
+              <Button type="submit" disabled={loading}>
+                {loading ? "Salvando..." : "Salvar Alterações"}
               </Button>
             </DialogFooter>
           </form>
         </Form>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

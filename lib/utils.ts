@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {  AssetStatus, AssetWithRelations } from "@/utils/schemas/schemas";
+import { AssetWithRelations } from "@/utils/schemas/assets.schemas";
+import { AssetStatus } from "@/utils/schemas/enums.schemas";
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -69,3 +70,65 @@ export function formatCompactCurrency(value: number): string {
   }
   return formatCurrency(value)
 }
+
+// Date utility functions
+
+export function formatDate(date: Date | string): string {
+  const d = typeof date === "string" ? new Date(date) : date
+  return d.toLocaleDateString("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  })
+}
+
+export function formatDateTime(date: Date | string): string {
+  const d = typeof date === "string" ? new Date(date) : date
+  return d.toLocaleString("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  })
+}
+
+export function formatRelativeTime(date: Date | string): string {
+  const d = typeof date === "string" ? new Date(date) : date
+  const now = new Date()
+  const diffInSeconds = Math.floor((now.getTime() - d.getTime()) / 1000)
+
+  if (diffInSeconds < 60) return "agora há pouco"
+  if (diffInSeconds < 3600) {
+    const minutes = Math.floor(diffInSeconds / 60)
+    return `há ${minutes} minuto${minutes > 1 ? "s" : ""}`
+  }
+  if (diffInSeconds < 86400) {
+    const hours = Math.floor(diffInSeconds / 3600)
+    return `há ${hours} hora${hours > 1 ? "s" : ""}`
+  }
+  if (diffInSeconds < 604800) {
+    const days = Math.floor(diffInSeconds / 86400)
+    return `há ${days} dia${days > 1 ? "s" : ""}`
+  }
+  return formatDate(d)
+}
+
+export function isExpiringSoon(date: Date | string, daysThreshold = 30): boolean {
+  const d = typeof date === "string" ? new Date(date) : date
+  const now = new Date()
+  const diffInDays = Math.floor((d.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+  return diffInDays >= 0 && diffInDays <= daysThreshold
+}
+
+export function isExpired(date: Date | string): boolean {
+  const d = typeof date === "string" ? new Date(date) : date
+  return d.getTime() < new Date().getTime()
+}
+
+export function getDaysUntil(date: Date | string): number {
+  const d = typeof date === "string" ? new Date(date) : date
+  const now = new Date()
+  return Math.floor((d.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+}
+

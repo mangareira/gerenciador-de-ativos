@@ -6,9 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { useFormContext } from "react-hook-form";
-import { CreateAsset } from "@/utils/schemas/schemas";
 import { Plus, X } from "lucide-react";
 import { useState } from "react";
+import { CreateAsset } from "@/utils/schemas/assets.schemas";
 
 export function DynamicSpecifications() {
   const [newFieldName, setNewFieldName] = useState("");
