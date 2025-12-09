@@ -22,6 +22,7 @@ import { DynamicSpecifications } from "@/components/ui/dynamic-specifications";
 import { Select as SelectOptions } from "@/components/select";
 import { useCreateAsset } from "@/utils/hooks/assets/useCreateAssets";
 import { CreateAsset, CreateAssetSchema } from "@/utils/schemas/assets.schemas";
+import { useCreateMovementHistory } from "@/utils/hooks/movementHistory/useCreateMovementHistory";
 
 interface AddAssetModalProps {
   open: boolean;
@@ -33,6 +34,7 @@ export default function AddAssetModal({ open, onOpenChange, departmentOptions }:
   const [isLoading, setIsLoading] = useState(false);
   
   const { mutate } = useCreateAsset();
+  const { mutate: createMovement } = useCreateMovementHistory()
   
   const form = useForm<CreateAsset>({
     resolver: zodResolver(CreateAssetSchema),
@@ -57,7 +59,26 @@ export default function AddAssetModal({ open, onOpenChange, departmentOptions }:
     setIsLoading(true);
 
     mutate(data, {
-      onSuccess: () => {
+      onSuccess: ( res ) => {
+
+        if (res && 'error' in res && res.error) {
+          console.error(res.error);
+          setIsLoading(false);
+          return;
+        }
+        if( 'asset' in res) {
+          const asset = res.asset
+
+          createMovement({
+            assetId: asset.id,
+            authorizedBy: "Jose da silva", //TODO: botar o nome do login
+            fromLocation: asset.location,
+            movementDate: new Date(),
+            reason: "Ativo registrado no sistema",
+            type: "creation",
+          })
+        }
+
         setIsLoading(false);
         onOpenChange(false);
       },

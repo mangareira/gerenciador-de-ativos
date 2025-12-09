@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
-import { CreateAssetSchema } from "@/utils/schemas/assets.schemas";
+import { CreateAssetSchema, UpdateAssetSchema } from "@/utils/schemas/assets.schemas";
 import { CreateAssetMovementSchema } from "@/utils/schemas/assetsMovementHistory.schemas";
 
 const app = new Hono()
@@ -73,10 +73,10 @@ const app = new Hono()
         return c.json({ error: "Ativo nao criado" }, 400);
       }
 
-      return c.json({ asset });
+      return c.json({ asset }, 201);
     }
    )
-   .get(
+  .get(
     '/movement-history/:assetId',
     zValidator(
       "param",
@@ -104,7 +104,7 @@ const app = new Hono()
       return c.json({ movement })
     }
    )
-   .post(
+  .post(
     '/movement-history',
     zValidator(
       "json",
@@ -119,8 +119,47 @@ const app = new Hono()
 
       if(!movement) return c.json({ error: "Movimento não criado" }, 400)
 
-      return c.json({ movement })
+      return c.json({ movement }, 201)
     }
-   )
+  )
+  .patch(
+    '/edit/:id',
+    zValidator(
+      'json',
+      UpdateAssetSchema
+    ),
+    zValidator(
+      'param',
+      z.object({
+        id: z.cuid()
+      })
+    ),
+    async (c) => {
+      const values = c.req.valid('json')
+      const { id } = c.req.valid('param')
+
+      if(!id) {
+        return c.json({error: "Id é obrigatorio"}, 404)
+      } 
+
+      const update = await prisma.asset.update({
+        where: {
+          id
+        },
+        data: values,
+        include: {
+          assignedTo: true,
+          department: true,
+          movements: true
+        }
+      })
+
+      if(!update) {
+        return c.json({error: "Erro ao atualizar Ativo"}, 400)
+      }
+
+      return c.json({ update })
+    }
+  )
 
 export default app

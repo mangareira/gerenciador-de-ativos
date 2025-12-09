@@ -23,6 +23,7 @@ import { DatePicker } from "@/components/datePicker"
 import { Select as SelectOptions } from "@/components/select";
 import { DynamicSpecifications } from "@/components/ui/dynamic-specifications"
 import { Asset, UpdateAsset, UpdateAssetSchema } from "@/utils/schemas/assets.schemas"
+import { useEditAssetSubmit } from "@/utils/hooks/assets/useEditAssetSubmit"
 
 interface EditAssetModalProps {
   asset: Asset,
@@ -38,10 +39,17 @@ export function EditAssetModal({ asset, departmentOptions }: EditAssetModalProps
     defaultValues: asset
   })
 
+  const { handleSubmit: editSubmit } = useEditAssetSubmit({
+    asset,
+    departmentOptions,
+    onSuccess: () => setOpen(false),
+  })
+
   const handleSubmit = async (data: UpdateAsset) => {
     setLoading(true)
 
-    console.log("[v0] Asset updated successfully", data)
+    editSubmit(data, setLoading)
+
     setLoading(false)
     setOpen(false)
   }
