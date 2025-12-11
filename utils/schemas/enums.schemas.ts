@@ -35,3 +35,13 @@ export const AssetMovementTypeSchema = z.enum([
 ])
 
 export type AssetMovementType = z.infer<typeof AssetMovementTypeSchema>
+
+export const MaintenanceTypeSchema = z.enum([
+  "preventive", 
+  "corrective", 
+  "upgrade", 
+  "cleaning", 
+  "inspection"
+])
+
+export type MaintenanceType = z.infer<typeof MaintenanceTypeSchema> 

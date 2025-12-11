@@ -15,6 +15,7 @@ export const useCreateMovementHistory = () => {
     },
     onSuccess: (_, movement) => {
       queryClient.invalidateQueries({ queryKey: ['asset', {id: movement.assetId} ] });
+      queryClient.invalidateQueries({ queryKey: ['maintenance', {id: movement.assetId} ] });
     },
   });
   return mutation;

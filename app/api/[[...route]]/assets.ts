@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 import { CreateAssetSchema, UpdateAssetSchema } from "@/utils/schemas/assets.schemas";
 import { CreateAssetMovementSchema } from "@/utils/schemas/assetsMovementHistory.schemas";
+import { createMaintenanceSchema } from "@/utils/schemas/maintenance.schemas";
 
 const app = new Hono()
   .get('/get-assets', async (c) => {
@@ -159,6 +160,66 @@ const app = new Hono()
       }
 
       return c.json({ update })
+    }
+  )
+  .post(
+    '/maintenance',
+    zValidator(
+      'json',
+      createMaintenanceSchema,
+    ),
+    async (c) => {
+      const values = c.req.valid('json')
+
+      const [maintenance] = await prisma.$transaction([
+        prisma.maintenance.create({
+          data: values
+        }),
+        prisma.asset.update({
+          where: {
+            id: values.assetId
+          },
+          data: {
+            status: 'maintenance'
+          }
+        })
+      ])
+
+      if(!maintenance) { 
+        return c.json({ error: "Erro ao criar a manutenção" }, 400)
+      }
+
+      return c.json({ maintenance })
+    }
+  )
+  .get(
+    '/maintenance/:assetId',
+    zValidator(
+      'param',
+      z.object({
+        assetId: z.cuid()
+      })
+    ),
+    async (c) => {
+      const { assetId } = c.req.valid('param')
+   
+      const maintenance = await prisma.maintenance.findMany({
+        where: {
+          assetId,
+        },
+        include: {
+          technician: true
+        },
+        orderBy: {
+          createdAt: 'desc'
+        }
+      })
+
+      if(!maintenance) {
+        return c.json({ error: "Erro ao encontrar as manuteções" }, 404)
+      }
+
+      return c.json({ maintenance })
     }
   )
 

@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { MaintenanceRecord } from "@/types/maintence-props";
 import { AssetWithRelations } from "@/utils/schemas/assets.schemas";
 import { AssetStatus } from "@/utils/schemas/enums.schemas";
 import { clsx, type ClassValue } from "clsx"
@@ -132,3 +133,19 @@ export function getDaysUntil(date: Date | string): number {
   return Math.floor((d.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
 }
 
+
+export const maintenanceTypeLabels: Record<MaintenanceRecord["maintenanceType"], string> = {
+  preventive: "Preventiva",
+  corrective: "Corretiva",
+  upgrade: "Upgrade",
+  inspection: "Inspeção",
+  cleaning: "Limpeza"
+}
+
+export const maintenanceTypeColors: Record<MaintenanceRecord["maintenanceType"], string> = {
+  preventive: "bg-blue-100 text-blue-800 border-blue-200",
+  corrective: "bg-orange-100 text-orange-800 border-orange-200",
+  upgrade: "bg-purple-100 text-purple-800 border-purple-200",
+  inspection: "bg-green-100 text-green-800 border-green-200",
+  cleaning: "bg-red-100 text-red-800 border-red-200"
+}

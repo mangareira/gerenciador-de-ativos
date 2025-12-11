@@ -34,6 +34,7 @@ model User {
   movementsFrom      AssetMovement[] @relation("MovementFromUser")
   movementsTo        AssetMovement[] @relation("MovementToUser")
   movementTechnician AssetMovement[] @relation("MovementTechnician")
+  maintenances       Maintenance[]   @relation("MaintenanceTechnician")
 
   @@map("users")
 }
@@ -92,9 +93,10 @@ model Asset {
   updatedAt           DateTime    @updatedAt
 
   // Relations
-  department Department      @relation(fields: [departmentId], references: [id])
-  assignedTo User?           @relation("AssetAssignment", fields: [assignedToId], references: [id])
-  movements  AssetMovement[]
+  department   Department      @relation(fields: [departmentId], references: [id])
+  assignedTo   User?           @relation("AssetAssignment", fields: [assignedToId], references: [id])
+  movements    AssetMovement[]
+  maintenances Maintenance[]
 
   @@map("assets")
 }
@@ -127,4 +129,31 @@ model AssetMovement {
   technician User? @relation("MovementTechnician", fields: [technicianId], references: [id])
 
   @@map("asset_movements")
+}
+
+enum MaintenanceType {
+  preventive
+  corrective
+  upgrade
+  cleaning
+  inspection
+}
+
+model Maintenance {
+  id              String          @id @default(cuid())
+  maintenanceType MaintenanceType
+  maintenanceDate DateTime
+  nextMaintenance DateTime?
+  technicianId    String?
+  assetId         String
+  cost            Float?
+  description     String
+  notes           String?
+  createdAt       DateTime        @default(now())
+
+  // Relations
+  asset      Asset @relation(fields: [assetId], references: [id])
+  technician User? @relation("MaintenanceTechnician", fields: [technicianId], references: [id])
+
+  @@map("maintenances")
 }
