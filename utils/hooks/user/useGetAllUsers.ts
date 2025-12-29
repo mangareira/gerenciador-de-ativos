@@ -1,16 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 import { client } from '@/lib/hono';
-import { UserRole } from '@/utils/schemas/enums.schemas';
 
-export const useGetUserByRole = (role: UserRole) => {
+export const useGetAllUsers = () => {
   const query = useQuery({
-    queryKey: ['technician'],
+    queryKey: ['users'],
     queryFn: async () => {
-      const response = await client.api.user['get-user-by-role'][':role'].$get({
-        param: {
-          role,
-        }
-      });
+      const response = await client.api.user['get-all'].$get()
 
       if(!response.ok) {
         throw new Error('Erro ao encontrar os Usuarios')

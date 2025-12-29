@@ -23,7 +23,7 @@ export const useEditAsset = (id: string) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['assets'] });
       queryClient.invalidateQueries({ queryKey: ['asset'] });
-      toast.success('Ativo autalizada');
+      toast.success('Ativo atualizada');
     },
     onError: () => {
       toast.error('Falha ao autalizar o Ativo');

@@ -11,6 +11,7 @@ import SpecificationsAssetCard from "@/components/assets/specificationsAssetCard
 import QuickActionsCard from "@/components/assets/quickActionsCard"
 import MovementHistoryCard from "@/components/assets/movementHistoryCard"
 import { useGetUserByRole } from "@/utils/hooks/user/useGetUserByRole"
+import { useGetAllUsers } from "@/utils/hooks/user/useGetAllUsers"
 
 export default function AssetDetailPage() {
   const params = useParams<{ id: string }>()
@@ -18,6 +19,7 @@ export default function AssetDetailPage() {
   const { data: asset } = useGetAsset(id)
   const { data: departments } = useGetDepartments();
   const { data: technicians } = useGetUserByRole('technician')
+  const { data: users } = useGetAllUsers()
   
 
   if(!asset) return null;
@@ -30,6 +32,11 @@ export default function AssetDetailPage() {
   const technicianOptions = (technicians ?? []).map((technician) => ({
     label: technician.name,
     value: technician.id
+  }))
+
+  const assignedOptions = (users ?? []).map((user) => ({
+    label: user.name,
+    value: user.id
   }))
 
   return (
@@ -62,6 +69,8 @@ export default function AssetDetailPage() {
           <QuickActionsCard 
             asset={asset} 
             technicianOptions={technicianOptions}  
+            assignedOptions={assignedOptions}
+            departamentOptions={departmentOptions}
           />
         </div>
       </div>

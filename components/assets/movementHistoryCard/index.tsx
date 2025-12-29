@@ -12,7 +12,9 @@ const MovementHistoryCard = ({asset}: {asset: Asset}) => {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {asset.movements.map((item, index) => (
+          {(
+            asset.movements?.slice(0, 3) ?? []
+          ).map((item, index) => (
             <div className={`flex items-start gap-4 border-l-2 ${index === 0 ? 'border-primary' : "border-muted"} pl-4`} key={item.id}>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">

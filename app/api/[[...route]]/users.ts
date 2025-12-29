@@ -49,6 +49,20 @@ const app = new Hono()
       return c.json( users )
     }
   )
+  .get(
+    '/get-all',
+    async (c) => {
+
+      const users = await prisma.user.findMany()
+
+      if(!users) {
+        return c.json({error: "Usuários não encontrado!"}, 404)
+      }
+
+      return c.json( users )
+
+    }
+  )
 
 export default app
 

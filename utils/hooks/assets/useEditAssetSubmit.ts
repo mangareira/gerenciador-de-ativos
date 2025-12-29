@@ -6,18 +6,20 @@ import { CreateAssetMovement } from "@/utils/schemas/assetsMovementHistory.schem
 interface UseEditAssetSubmitProps {
   asset: Asset;
   departmentOptions: { value: string; label: string }[];
+  assignedOptions?: { value: string; label: string }[];
   onSuccess?: () => void;
 }
 
 export function useEditAssetSubmit({
   asset,
   departmentOptions,
+  assignedOptions,
   onSuccess,
 }: UseEditAssetSubmitProps) {
   const { mutate: editAsset } = useEditAsset(asset.id);
   const { mutate: createMovement } = useCreateMovementHistory();
 
-  const handleSubmit = async (data: UpdateAsset, setLoading?: (loading: boolean) => void) => {
+  const handleSubmit = async (data: UpdateAsset, setLoading?: (loading: boolean) => void, notes?: string, movementDate?: Date) => {
     if (setLoading) setLoading(true);
 
     return new Promise<void>((resolve, reject) => {
@@ -46,13 +48,30 @@ export function useEditAssetSubmit({
                   toUserId: null,
                   fromLocation: `Departamento: ${fromDept}`,
                   toLocation: `Departamento: ${toDept}`,
-                  movementDate: new Date(),
+                  movementDate:  movementDate ||new Date(),
                   reason: `Transferência de departamento: ${fromDept} → ${toDept}`,
                   authorizedBy: "Sistema",
-                  notes: null,
+                  notes: notes || null,
                 });
               }
 
+              // Assigned alterado (responsável)
+              if ("assignedToId" in data && data.assignedToId !== asset.assignedToId) {
+                const fromUser = assignedOptions?.find(u => u.value === asset.assignedToId)?.label || asset.assignedToId || "Sem responsável";
+                const toUser = assignedOptions?.find(u => u.value === data.assignedToId)?.label || data.assignedToId || "Sem responsável";
+                movements.push({
+                  assetId: updatedAsset.id,
+                  type: "transfer",
+                  fromUserId: asset.assignedToId ?? null,
+                  toUserId: data.assignedToId ?? null,
+                  fromLocation: `Responsável: ${fromUser}`,
+                  toLocation: `Responsável: ${toUser}`,
+                  movementDate: movementDate ||new Date(),
+                  reason: `Transferência de responsável: ${fromUser} → ${toUser}`,
+                  authorizedBy: "Sistema",
+                  notes:  notes || null,
+                });
+              }
               // Localização alterada
               if (data.location && data.location !== asset.location) {
                 movements.push({
@@ -62,10 +81,10 @@ export function useEditAssetSubmit({
                   toUserId: null,
                   fromLocation: asset.location ?? "",
                   toLocation: data.location,
-                  movementDate: new Date(),
+                  movementDate: movementDate ||new Date(),
                   reason: `Mudança de localização: ${asset.location ?? "desconhecido"} → ${data.location}`,
                   authorizedBy: "Sistema",
-                  notes: null,
+                  notes:  notes || null,
                 });
               }
 
