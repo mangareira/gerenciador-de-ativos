@@ -26,11 +26,12 @@ import { Asset, UpdateAsset, UpdateAssetSchema } from "@/utils/schemas/assets.sc
 import { useEditAssetSubmit } from "@/utils/hooks/assets/useEditAssetSubmit"
 
 interface EditAssetModalProps {
-  asset: Asset,
+  asset: Asset
   departmentOptions: { value: string; label: string }[]
+  triggerButton?: React.ReactNode
 }
 
-export function EditAssetModal({ asset, departmentOptions }: EditAssetModalProps) {
+export function EditAssetModal({ asset, departmentOptions, triggerButton }: EditAssetModalProps) {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
 
@@ -66,10 +67,12 @@ export function EditAssetModal({ asset, departmentOptions }: EditAssetModalProps
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">
-          <Edit className="mr-2 h-4 w-4" />
-          Editar
-        </Button>
+        {triggerButton || (
+          <Button variant="outline" className="w-full justify-start bg-transparent">
+            <Edit className="mr-2 h-4 w-4" />
+            Editar
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>

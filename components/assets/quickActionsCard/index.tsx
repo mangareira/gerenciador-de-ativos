@@ -5,6 +5,7 @@ import { FileText } from "lucide-react"
 import { MaintenanceModal } from "../maintenanceModal"
 import { MaintenanceHistoryModal } from "../maintenanceHistoryModal"
 import { AllocateAssetModal } from "../allocateAssetModal"
+import AssetMovementHistoryModal from "../assetMovementHIstoryModal"
 
 function QuickActionsCard({ asset, technicianOptions, assignedOptions, departamentOptions }:{
   asset: Asset, 
@@ -34,6 +35,7 @@ function QuickActionsCard({ asset, technicianOptions, assignedOptions, departame
           assignedOptions={assignedOptions}
           departmentOptions={departamentOptions}
         />
+        <AssetMovementHistoryModal asset={asset} /> 
         <Button variant="outline" className="w-full justify-start bg-transparent">
           <FileText className="mr-2 h-4 w-4" />
           Criar Chamado

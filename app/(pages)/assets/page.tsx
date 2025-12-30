@@ -7,12 +7,14 @@ import SummaryStatus from "@/components/assets/summaryStatus";
 import { Button } from "@/components/ui/button";    
 import { useGetAssets } from "@/utils/hooks/assets/useGetAssets";
 import { useGetDepartments } from "@/utils/hooks/department/useGetDepartments";
+import { useGetAllUsers } from "@/utils/hooks/user/useGetAllUsers";
 import { Plus } from "lucide-react";
 import { useMemo, useState } from "react";
 
 export default function AssetsPage() {
   const { data: assets, isLoading } = useGetAssets();
   const { data: departments } = useGetDepartments();
+  const { data: users } = useGetAllUsers()
   
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
@@ -40,6 +42,11 @@ export default function AssetsPage() {
     label: department.name,
     value: department.id,
   }));
+
+  const assignedOptions = (users ?? []).map((user) => ({
+    label: user.name,
+    value: user.id
+  }))
 
   return (
     <div className="space-y-6">
@@ -79,7 +86,12 @@ export default function AssetsPage() {
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {filteredAssets.length > 0 ? (
                 filteredAssets.map((asset) => (
-                  <AssetsCard key={asset.id} asset={asset} />
+                  <AssetsCard 
+                    key={asset.id} 
+                    asset={asset} 
+                    departamentOptions={departmentOptions}
+                    assignedOptions={assignedOptions}
+                  />
                 ))
               ) : (
                 <div className="col-span-full text-center py-12">

@@ -5,7 +5,10 @@ import { Laptop, MoreVertical, Network, Package, Printer, Server, Smartphone } f
 import Link from "next/link";
 import { formatCurrency, getAssetStatusColor, getStatusLabel } from "@/lib/utils";
 import { Badge } from "../../ui/badge";
-import { AssetWithRelations } from "@/utils/schemas/assets.schemas";
+import { Asset } from "@/utils/schemas/assets.schemas";
+import { AllocateAssetModal } from "../allocateAssetModal";
+import { EditAssetModal } from "../editAssetModal";
+import AssetMovementHistoryModal from "../assetMovementHIstoryModal";
 
 const assetIcons = {
   desktop: Package,
@@ -17,7 +20,21 @@ const assetIcons = {
   other: Package,
 }
 
-export default function AssetsCard({ asset }: { asset: AssetWithRelations }) {
+export default function AssetsCard({ 
+  asset,
+  departamentOptions,
+  assignedOptions
+}: { 
+  asset: Asset
+  departamentOptions: {
+    label: string
+    value: string
+  }[] 
+  assignedOptions: {
+    label: string
+    value: string
+  }[] 
+}) {
   const Icon = assetIcons[asset.type];
   return (
     <Card key={asset.id} className="hover:shadow-md transition-shadow">
@@ -46,11 +63,27 @@ export default function AssetsCard({ asset }: { asset: AssetWithRelations }) {
               <DropdownMenuItem asChild>
                 <Link href={`/assets/${asset.id}`}>Ver Detalhes</Link>
               </DropdownMenuItem>
-              <DropdownMenuItem>Editar</DropdownMenuItem>
-              <DropdownMenuItem>Mover/Alocar</DropdownMenuItem>
-              <DropdownMenuItem>Histórico</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-destructive">Aposentar</DropdownMenuItem>
+              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                <EditAssetModal 
+                  asset={asset}
+                  departmentOptions={departamentOptions}
+                  triggerButton={<span className="w-full">Editar</span>}
+                />
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                <AllocateAssetModal
+                  asset={asset}
+                  departmentOptions={departamentOptions}
+                  assignedOptions={assignedOptions}
+                  triggerButton={<span className="w-full">Mover/Alocar</span>}
+                />
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                <AssetMovementHistoryModal
+                  asset={asset}
+                  triggerButton={<span className="w-full">Histórico</span>}
+                />
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

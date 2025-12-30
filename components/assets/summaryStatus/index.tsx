@@ -1,8 +1,8 @@
 import { formatCurrency } from "@/lib/utils";
 import { Card, CardContent } from "../../ui/card";
-import { AssetWithRelations } from "@/utils/schemas/assets.schemas";
+import { Asset } from "@/utils/schemas/assets.schemas";
 
-export default function SummaryStatus({ assets }: { assets: AssetWithRelations[] }) {
+export default function SummaryStatus({ assets }: { assets: Asset[] }) {
   return (
     <div className="grid gap-4 md:grid-cols-4">
       <Card>

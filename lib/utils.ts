@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { MaintenanceRecord } from "@/types/maintence-props";
-import { AssetWithRelations } from "@/utils/schemas/assets.schemas";
+import { Asset} from "@/utils/schemas/assets.schemas";
 import { AssetStatus } from "@/utils/schemas/enums.schemas";
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
@@ -9,7 +9,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function parseAssetDates(asset: any): AssetWithRelations {
+export function parseAssetDates(asset: any): Asset {
   return {
     ...asset,
     createdAt: new Date(asset.createdAt),

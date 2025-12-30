@@ -13,6 +13,7 @@ const app = new Hono()
         include: {
           department: true,
           assignedTo: true,
+          movements: true
         },
         orderBy: {
           createdAt: 'desc',
@@ -180,7 +181,8 @@ const app = new Hono()
             id: values.assetId
           },
           data: {
-            status: 'maintenance'
+            status: 'maintenance',
+            lastMaintenanceDate: values.maintenanceDate
           }
         })
       ])

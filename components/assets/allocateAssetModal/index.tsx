@@ -62,8 +62,6 @@ export function AllocateAssetModal({
   })
 
   const handleSubmit = async (data: AllocateAsset) => {
-    console.log("[v0] Asset allocated/moved successfull", data)
-
     allocateSubmit({
       assignedToId: data.assignedToId,
       departmentId: data.departmentId,
@@ -143,6 +141,9 @@ export function AllocateAssetModal({
                         id="location" 
                         placeholder="Ex: Sala 201, Prédio A" 
                         required
+                        onKeyDown={(e) => {
+                          e.stopPropagation()
+                        }}
                         {...field} 
                       /> 
                     </FormControl> 
@@ -175,6 +176,9 @@ export function AllocateAssetModal({
                         <Textarea 
                           placeholder="Descreva o motivo da movimentação..." 
                           rows={3}
+                          onKeyDown={(e) => {
+                            e.stopPropagation()
+                          }}
                           {...field} 
                         />
                       </FormControl>

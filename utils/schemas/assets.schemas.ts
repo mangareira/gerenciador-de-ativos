@@ -1,7 +1,7 @@
 import z from "zod";
 import { AssetStatusSchema, AssetTypeSchema } from "./enums.schemas";
-import { Department, DepartmentSchema } from "./department.schemas";
-import { User, UserSchema } from "./user.schemas";
+import { DepartmentSchema } from "./department.schemas";
+import { UserSchema } from "./user.schemas";
 import { AssetMovementSchema } from "./assetsMovementHistory.schemas";
 
 export const AssetSchema = z.object({
@@ -68,15 +68,6 @@ export const UpdateAssetSchema = z.object({
   location: z.string().min(1, "Localização é obrigatória").optional(),
   specifications: z.record(z.string(), z.any()).optional(),
   notes: z.string().nullable().optional(),
-  lastMaintenanceDate: z.date().nullable().optional(),
+  lastMaintenanceDate: z.coerce.date<Date>().nullable().optional(),
 });
 export type UpdateAsset = z.infer<typeof UpdateAssetSchema>;
-
-// ============================================
-// ASSET WITH RELATIONS
-// ============================================
-
-export type AssetWithRelations = Omit<Asset, 'departmentId' | 'assignedToId'> & {
-  department: Department;
-  assignedTo: User | null;
-};
