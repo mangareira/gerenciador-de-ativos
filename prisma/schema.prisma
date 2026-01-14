@@ -35,6 +35,9 @@ model User {
   movementsTo        AssetMovement[] @relation("MovementToUser")
   movementTechnician AssetMovement[] @relation("MovementTechnician")
   maintenances       Maintenance[]   @relation("MaintenanceTechnician")
+  requestedTickets   Ticket[]        @relation("TicketRequester")
+  assignedTickets    Ticket[]        @relation("TicketAssignee")
+  ticketComments     TicketComment[]
 
   @@map("users")
 }
@@ -97,6 +100,7 @@ model Asset {
   assignedTo   User?           @relation("AssetAssignment", fields: [assignedToId], references: [id])
   movements    AssetMovement[]
   maintenances Maintenance[]
+  tickets      Ticket[]
 
   @@map("assets")
 }
@@ -156,4 +160,69 @@ model Maintenance {
   technician User? @relation("MaintenanceTechnician", fields: [technicianId], references: [id])
 
   @@map("maintenances")
+}
+
+// Ticket enums and models
+
+enum TicketPriorityType {
+  low
+  medium
+  high
+  critical
+}
+
+enum TicketStatusType {
+  open
+  in_progress
+  pending
+  resolved
+  closed
+}
+
+enum TicketCategoryType {
+  hardware
+  software
+  network
+  access
+  other
+}
+
+model Ticket {
+  id                      String             @id @default(cuid())
+  title                   String
+  description             String
+  category                TicketCategoryType
+  priority                TicketPriorityType
+  status                  TicketStatusType
+  requesterId             String
+  requester               User               @relation("TicketRequester", fields: [requesterId], references: [id])
+  assignedToId            String?
+  assignedTo              User?              @relation("TicketAssignee", fields: [assignedToId], references: [id])
+  assetId                 String?
+  asset                   Asset?             @relation(fields: [assetId], references: [id])
+  createdAt               DateTime           @default(now())
+  updatedAt               DateTime           @updatedAt
+  resolvedAt              DateTime?
+  resolution              String?
+  estimatedResolutionDate DateTime?
+
+  // Relations
+  comments TicketComment[]
+
+  @@map("tickets")
+}
+
+model TicketComment {
+  id         String   @id @default(cuid())
+  ticketId   String
+  userId     String
+  comment    String
+  isInternal Boolean
+  createdAt  DateTime @default(now())
+
+  // Relations
+  ticket Ticket @relation(fields: [ticketId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@map("ticket_comments")
 }

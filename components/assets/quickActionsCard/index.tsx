@@ -1,24 +1,33 @@
-import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Asset } from "@/utils/schemas/assets.schemas"
-import { FileText } from "lucide-react"
 import { MaintenanceModal } from "../maintenanceModal"
 import { MaintenanceHistoryModal } from "../maintenanceHistoryModal"
 import { AllocateAssetModal } from "../allocateAssetModal"
 import AssetMovementHistoryModal from "../assetMovementHIstoryModal"
+import CreateTicketModal from "@/components/ticket/createTicketModal"
 
-function QuickActionsCard({ asset, technicianOptions, assignedOptions, departamentOptions }:{
+function QuickActionsCard({ 
+  asset, 
+  technicianOptions, 
+  assignedToOptions, 
+  departamentOptions,
+  assetsOptions
+}:{
   asset: Asset, 
   technicianOptions: {
     label: string,
     value: string
   }[]
-  assignedOptions: {
+  assignedToOptions: {
     label: string,
     value: string
   }[]
   departamentOptions: {
     label: string,
+    value: string
+  }[]
+  assetsOptions: {
+    label: string
     value: string
   }[]
 }) {
@@ -32,14 +41,15 @@ function QuickActionsCard({ asset, technicianOptions, assignedOptions, departame
         <MaintenanceHistoryModal asset={asset} />
         <AllocateAssetModal 
           asset={asset} 
-          assignedOptions={assignedOptions}
+          assignedToOptions={assignedToOptions}
           departmentOptions={departamentOptions}
         />
         <AssetMovementHistoryModal asset={asset} /> 
-        <Button variant="outline" className="w-full justify-start bg-transparent">
-          <FileText className="mr-2 h-4 w-4" />
-          Criar Chamado
-        </Button>
+        <CreateTicketModal 
+          asset={asset} 
+          variant="outline" 
+          assetsOptions={assetsOptions}
+        />
       </CardContent>
     </Card>
   )

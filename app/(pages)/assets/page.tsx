@@ -43,7 +43,7 @@ export default function AssetsPage() {
     value: department.id,
   }));
 
-  const assignedOptions = (users ?? []).map((user) => ({
+  const assignedToOptions = (users ?? []).map((user) => ({
     label: user.name,
     value: user.id
   }))
@@ -90,7 +90,7 @@ export default function AssetsPage() {
                     key={asset.id} 
                     asset={asset} 
                     departamentOptions={departmentOptions}
-                    assignedOptions={assignedOptions}
+                    assignedToOptions={assignedToOptions}
                   />
                 ))
               ) : (

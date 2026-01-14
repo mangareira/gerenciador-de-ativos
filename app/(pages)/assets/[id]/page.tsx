@@ -34,10 +34,17 @@ export default function AssetDetailPage() {
     value: technician.id
   }))
 
-  const assignedOptions = (users ?? []).map((user) => ({
+  const assignedToOptions = (users ?? []).map((user) => ({
     label: user.name,
     value: user.id
   }))
+
+  const assetsOptions = [
+    {
+      label: asset.name,
+      value: asset.id
+    }
+  ]
 
   return (
     <div className="space-y-6">
@@ -69,8 +76,9 @@ export default function AssetDetailPage() {
           <QuickActionsCard 
             asset={asset} 
             technicianOptions={technicianOptions}  
-            assignedOptions={assignedOptions}
+            assignedToOptions={assignedToOptions}
             departamentOptions={departmentOptions}
+            assetsOptions={assetsOptions}
           />
         </div>
       </div>

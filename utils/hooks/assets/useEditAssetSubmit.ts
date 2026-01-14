@@ -6,14 +6,14 @@ import { CreateAssetMovement } from "@/utils/schemas/assetsMovementHistory.schem
 interface UseEditAssetSubmitProps {
   asset: Asset;
   departmentOptions: { value: string; label: string }[];
-  assignedOptions?: { value: string; label: string }[];
+  assignedToOptions?: { value: string; label: string }[];
   onSuccess?: () => void;
 }
 
 export function useEditAssetSubmit({
   asset,
   departmentOptions,
-  assignedOptions,
+  assignedToOptions,
   onSuccess,
 }: UseEditAssetSubmitProps) {
   const { mutate: editAsset } = useEditAsset(asset.id);
@@ -57,8 +57,8 @@ export function useEditAssetSubmit({
 
               // Assigned alterado (responsável)
               if ("assignedToId" in data && data.assignedToId !== asset.assignedToId) {
-                const fromUser = assignedOptions?.find(u => u.value === asset.assignedToId)?.label || asset.assignedToId || "Sem responsável";
-                const toUser = assignedOptions?.find(u => u.value === data.assignedToId)?.label || data.assignedToId || "Sem responsável";
+                const fromUser = assignedToOptions?.find(u => u.value === asset.assignedToId)?.label || asset.assignedToId || "Sem responsável";
+                const toUser = assignedToOptions?.find(u => u.value === data.assignedToId)?.label || data.assignedToId || "Sem responsável";
                 movements.push({
                   assetId: updatedAsset.id,
                   type: "transfer",

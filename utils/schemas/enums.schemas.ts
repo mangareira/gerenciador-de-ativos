@@ -45,3 +45,32 @@ export const MaintenanceTypeSchema = z.enum([
 ])
 
 export type MaintenanceType = z.infer<typeof MaintenanceTypeSchema> 
+
+export const TicketPriorityTypeSchema = z.enum([
+  "low",
+  "medium",
+  "high",
+  "critical"
+])
+
+export type TicketPriorityType = z.infer<typeof TicketPriorityTypeSchema>
+
+export const TicketStatusTypeSchema = z.enum([
+  "open",
+  "in_progress",
+  "pending",
+  "resolved",
+  "closed"
+])
+
+export type TicketStatusType = z.infer<typeof TicketStatusTypeSchema>
+
+export const TicketCategoryTypeSchema = z.enum([
+   "hardware",
+   "software",
+   "network",
+   "access",
+   "other"
+])
+
+export type TicketCategoryType = z.infer<typeof TicketCategoryTypeSchema>

@@ -23,14 +23,14 @@ const assetIcons = {
 export default function AssetsCard({ 
   asset,
   departamentOptions,
-  assignedOptions
+  assignedToOptions
 }: { 
   asset: Asset
   departamentOptions: {
     label: string
     value: string
   }[] 
-  assignedOptions: {
+  assignedToOptions: {
     label: string
     value: string
   }[] 
@@ -74,7 +74,7 @@ export default function AssetsCard({
                 <AllocateAssetModal
                   asset={asset}
                   departmentOptions={departamentOptions}
-                  assignedOptions={assignedOptions}
+                  assignedToOptions={assignedToOptions}
                   triggerButton={<span className="w-full">Mover/Alocar</span>}
                 />
               </DropdownMenuItem>

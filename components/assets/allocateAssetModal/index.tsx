@@ -30,13 +30,13 @@ interface AllocateAssetModalProps {
   asset: Asset
   triggerButton?: React.ReactNode
   departmentOptions: { value: string; label: string }[]
-  assignedOptions: { value: string; label: string }[]
+  assignedToOptions: { value: string; label: string }[]
 }
 
 export function AllocateAssetModal({ 
   asset, 
   triggerButton, 
-  assignedOptions,
+  assignedToOptions,
   departmentOptions
 }: AllocateAssetModalProps) {
   const [open, setOpen] = useState(false)
@@ -45,7 +45,7 @@ export function AllocateAssetModal({
   const { handleSubmit: allocateSubmit } = useEditAssetSubmit({
     asset, 
     departmentOptions,
-    assignedOptions,
+    assignedToOptions,
     onSuccess: () => {
       setOpen(false)
     }
@@ -102,7 +102,7 @@ export function AllocateAssetModal({
                       <Label>Usuário Responsável</Label>
                       <FormControl>
                         <Select
-                          options={assignedOptions}
+                          options={assignedToOptions}
                           placeholder="Selecione um Usuário"
                           {...field}
                         />
