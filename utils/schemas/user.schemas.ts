@@ -13,8 +13,8 @@ export const UserSchema = z.object({
   department: z.string().min(1, "Departamento é obrigatório"),
   avatar: z.url("URL do avatar inválida").nullable().optional(),
   isActive: z.boolean().default(true),
-  createdAt: z.date(),
-  updatedAt: z.date(),
+  createdAt: z.coerce.date<Date | string>(),
+  updatedAt: z.coerce.date<Date | string>(),
 });
 export type User = z.infer<typeof UserSchema>;
 

@@ -29,5 +29,26 @@ const app = new Hono()
 
     }
   )
+  .get(
+    "/get-all",
+    async (c) => {
+      try {
+        const tickets = await prisma.ticket.findMany({
+          orderBy: {
+            createdAt: "desc"
+          },
+          include: {
+            asset: true,
+            assignedTo: true,
+            requester: true,
+          }
+        })
+        
+        return c.json({ tickets }, 200)
+      } catch  {
+        return c.json({ error: "Error as buscar chamados" }, 404)
+      }
+    }
+  )
 
 export default app

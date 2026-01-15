@@ -16,7 +16,11 @@ export const TicketSchema = z.object({
   assignedToId: z.cuid().nullable().optional(),
   assignedTo: UserSchema.nullable().optional(),
   assetId: z.cuid().nullable().optional(),
-  asset: AssetSchema.nullable().optional(),
+  asset: AssetSchema.omit({
+    movements: true,
+    assignedTo: true,
+    department: true
+  }).nullable().optional(),
   createdAt: z.coerce.date<Date>(),
   updatedAt: z.coerce.date<Date>(),
   resolvedAt: z.coerce.date<Date>().nullable().optional(),

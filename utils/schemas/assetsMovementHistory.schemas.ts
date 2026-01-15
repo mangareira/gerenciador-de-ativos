@@ -14,7 +14,7 @@ export const AssetMovementSchema = z.object({
   toUserId: z.cuid().optional().nullable(),
   fromLocation: z.string(),
   toLocation: z.string().optional().nullable(),
-  movementDate: z.date(),
+  movementDate: z.coerce.date<Date>(),
   reason: z.string(),
   authorizedBy: z.string(),
   notes: z.string().optional().nullable(),

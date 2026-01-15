@@ -12,8 +12,8 @@ export const AssetSchema = z.object({
   serialNumber: z.string().min(1, "Número de série é obrigatório"),
   manufacturer: z.string().min(1, "Fabricante é obrigatório"),
   model: z.string().min(1, "Modelo é obrigatório"),
-  purchaseDate: z.date(),
-  warrantyExpiry: z.date(),
+  purchaseDate: z.coerce.date<Date>(),
+  warrantyExpiry: z.coerce.date<Date>(),
   purchasePrice: z.number().positive("Preço de compra deve ser positivo"),
   currentValue: z.number().nonnegative("Valor atual deve ser não-negativo"),
   departmentId: z.cuid(),
@@ -25,10 +25,10 @@ export const AssetSchema = z.object({
   location: z.string().min(1, "Localização é obrigatória"),
   specifications: z.record(z.string(), z.any()),
   notes: z.string().nullable().optional(),
-  lastMaintenanceDate: z.date().nullable().optional(),
+  lastMaintenanceDate: z.coerce.date<Date>().nullable().optional(),
   movements: AssetMovementSchema.array(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
+  createdAt: z.coerce.date<Date>(),
+  updatedAt: z.coerce.date<Date>(),
 });
 export type Asset = z.infer<typeof AssetSchema>;
 

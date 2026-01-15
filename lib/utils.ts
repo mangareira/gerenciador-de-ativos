@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { MaintenanceRecord } from "@/types/maintence-props";
 import { Asset} from "@/utils/schemas/assets.schemas";
-import { AssetStatus } from "@/utils/schemas/enums.schemas";
+import { AssetStatus, TicketPriorityType, TicketStatusType } from "@/utils/schemas/enums.schemas";
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -148,4 +148,26 @@ export const maintenanceTypeColors: Record<MaintenanceRecord["maintenanceType"],
   upgrade: "bg-purple-100 text-purple-800 border-purple-200",
   inspection: "bg-green-100 text-green-800 border-green-200",
   cleaning: "bg-red-100 text-red-800 border-red-200"
+}
+
+
+export function getTicketStatusColor(status: TicketStatusType): string {
+  const colors = {
+    open: "bg-blue-100 text-blue-800 border-blue-200",
+    in_progress: "bg-purple-100 text-purple-800 border-purple-200",
+    pending: "bg-yellow-100 text-yellow-800 border-yellow-200",
+    resolved: "bg-green-100 text-green-800 border-green-200",
+    closed: "bg-gray-100 text-gray-800 border-gray-200",
+  }
+  return colors[status]
+}
+
+export function getTicketPriorityColor(priority: TicketPriorityType): string {
+  const colors = {
+    low: "bg-gray-100 text-gray-800 border-gray-200",
+    medium: "bg-blue-100 text-blue-800 border-blue-200",
+    high: "bg-orange-100 text-orange-800 border-orange-200",
+    critical: "bg-red-100 text-red-800 border-red-200",
+  }
+  return colors[priority]
 }
