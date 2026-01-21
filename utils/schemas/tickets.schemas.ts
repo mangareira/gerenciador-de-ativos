@@ -43,3 +43,18 @@ export const CreateTicketSchema = z.object({
 })
 
 export type CreateTicket = z.infer<typeof CreateTicketSchema>
+
+export const UpdateTicketSchema = z.object({
+  title: z.string().optional(),
+  description: z.string().optional(),
+  category: TicketCategoryTypeSchema.optional(),
+  priority: TicketPriorityTypeSchema.optional(),
+  status: TicketStatusTypeSchema.optional(),
+  assignedToId: z.cuid().optional(),
+  assetId: z.cuid().optional(),
+  resolution: z.string().nullable().optional(),
+  resolvedAt: z.coerce.date<Date>().nullable().optional(),
+  estimatedResolutionDate: z.coerce.date<Date>().nullable().optional()
+})
+
+export type UpdateTicket = z.infer<typeof UpdateTicketSchema>
