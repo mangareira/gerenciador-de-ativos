@@ -112,7 +112,10 @@ const app = new Hono()
   
         await prisma.ticket.update({
           where: { id },
-          data: values,
+          data: {
+            ...values,
+            updatedAt: new Date()
+          },
         })
   
         return c.json({ message: "Chamado atualizado com sucesso" }, 200)
