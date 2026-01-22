@@ -5,7 +5,7 @@ import { Clock, TicketIcon } from "lucide-react"
 export const SummaryTickets = ({ tickets }: {tickets: Ticket[]}) => {
 
   const openTickets = tickets.filter((ticket) => ticket.status === "open")
-  const criticalTickets = tickets.filter((ticket) => ticket.priority === "critical")
+  const criticalTickets = tickets.filter((ticket) => ticket.priority === "critical" && ticket.status != "resolved")
   const pendingTickets = tickets.filter((ticket) => ticket.status === "pending")
   const resolvedTickets = tickets.filter((ticket) => ticket.status === "resolved")
   

@@ -3,12 +3,13 @@
 import { CommentsTicketCard } from "@/components/ticket/commentsTicketCard";
 import { DescriptionTicketCard } from "@/components/ticket/descriptionTicketCard";
 import { InfoTicketCard } from "@/components/ticket/infoTicketCard";
+import { ResolverTicketModal } from "@/components/ticket/resolverTicketModal";
 import { StatusTicketCard } from "@/components/ticket/statusTicketCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getStatusLabel, getTicketPriorityColor } from "@/lib/utils";
 import { useGetTicket } from "@/utils/hooks/tickets/useGetTicket";
-import { ArrowLeft, CheckCircle, Edit } from "lucide-react";
+import { ArrowLeft, Edit } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
@@ -41,10 +42,7 @@ export default function TicketDetailsPage() {
         </div>
         <div className="flex gap-2">
           {ticket.status !== "resolved" && ticket.status !== "closed" && (
-            <Button variant="outline">
-              <CheckCircle className="mr-2 h-4 w-4" />
-              Resolver
-            </Button>
+            <ResolverTicketModal ticket={ticket} /> 
           )}
           <Button variant="outline">
             <Edit className="mr-2 h-4 w-4" />
