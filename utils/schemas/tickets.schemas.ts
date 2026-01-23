@@ -50,8 +50,8 @@ export const UpdateTicketSchema = z.object({
   category: TicketCategoryTypeSchema.optional(),
   priority: TicketPriorityTypeSchema.optional(),
   status: TicketStatusTypeSchema.optional(),
-  assignedToId: z.cuid().optional(),
-  assetId: z.cuid().optional(),
+  assignedToId: z.cuid().nullable().optional(),
+  assetId: z.cuid().nullable().optional(),
   resolution: z.string().nullable().optional(),
   resolvedAt: z.coerce.date<Date>().nullable().optional(),
   estimatedResolutionDate: z.coerce.date<Date>().nullable().optional()

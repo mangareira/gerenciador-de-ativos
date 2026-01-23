@@ -23,7 +23,11 @@ export const ResolverTicketModal = ({ ticket } : { ticket: Ticket }) => {
   const { mutate, isPending } = useUpdateTicket(ticket.id)
 
   const onSubmit = (data: UpdateTicket) => {
-    mutate(data)
+    mutate(data, {
+      onSuccess: () => {
+        setOpen(false)
+      }
+    })
   }
 
   return (

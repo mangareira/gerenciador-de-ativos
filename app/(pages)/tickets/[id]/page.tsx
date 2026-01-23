@@ -2,14 +2,17 @@
 
 import { CommentsTicketCard } from "@/components/ticket/commentsTicketCard";
 import { DescriptionTicketCard } from "@/components/ticket/descriptionTicketCard";
+import { EditTicketModal } from "@/components/ticket/editTicketModal";
 import { InfoTicketCard } from "@/components/ticket/infoTicketCard";
 import { ResolverTicketModal } from "@/components/ticket/resolverTicketModal";
 import { StatusTicketCard } from "@/components/ticket/statusTicketCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getStatusLabel, getTicketPriorityColor } from "@/lib/utils";
+import { useGetAssets } from "@/utils/hooks/assets/useGetAssets";
 import { useGetTicket } from "@/utils/hooks/tickets/useGetTicket";
-import { ArrowLeft, Edit } from "lucide-react";
+import { useGetUserByRole } from "@/utils/hooks/user/useGetUserByRole";
+import { ArrowLeft} from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
@@ -18,8 +21,20 @@ export default function TicketDetailsPage() {
   const id = params.id
 
   const { data: ticket } = useGetTicket(id)
-
+  const { data: assets } = useGetAssets()
+  const { data: technicians } = useGetUserByRole('technician')
+  
   if(!ticket) return null
+
+  const technicianOptions = (technicians ?? []).map((technician) => ({
+    label: technician.name,
+    value: technician.id
+  }))
+
+  const assetsOptions = (assets ?? []).map((asset) => ({
+    label: asset.name,
+    value: asset.id
+  }))
 
   return (
     <div className="space-y-6">
@@ -44,10 +59,11 @@ export default function TicketDetailsPage() {
           {ticket.status !== "resolved" && ticket.status !== "closed" && (
             <ResolverTicketModal ticket={ticket} /> 
           )}
-          <Button variant="outline">
-            <Edit className="mr-2 h-4 w-4" />
-            Editar
-          </Button>
+          <EditTicketModal
+            ticket={ticket}
+            assetsOptions={assetsOptions}
+            technicianOptions={technicianOptions}
+          />
         </div>
       </div>
 
