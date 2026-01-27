@@ -74,7 +74,7 @@ export function EditAssetModal({ asset, departmentOptions, triggerButton }: Edit
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Editar Ativo</DialogTitle>
           <DialogDescription>Atualize as informações do ativo</DialogDescription>

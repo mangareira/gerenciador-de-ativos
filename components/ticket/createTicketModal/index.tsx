@@ -82,7 +82,7 @@ const CreateTicketModal = ({
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Criar Novo Chamado</DialogTitle>
           <DialogDescription>

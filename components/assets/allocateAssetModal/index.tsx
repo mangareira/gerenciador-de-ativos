@@ -83,7 +83,7 @@ export function AllocateAssetModal({
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="max-w-lg">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Alocar/Mover Ativo</DialogTitle>
           <DialogDescription>

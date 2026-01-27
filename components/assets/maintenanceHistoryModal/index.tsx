@@ -41,7 +41,7 @@ export function MaintenanceHistoryModal({ asset }: MaintenanceHistoryModalProps)
           Histórico de Manutenções
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+      <DialogContent >
         <DialogHeader>
           <DialogTitle>Histórico de Manutenções</DialogTitle>
           <DialogDescription>Histórico completo de manutenções realizadas no ativo {asset.name}</DialogDescription>
@@ -57,7 +57,7 @@ export function MaintenanceHistoryModal({ asset }: MaintenanceHistoryModalProps)
           </SummaryCard>
           <SummaryCard
             title="Custo Total"
-            className="text-2xl font-bold"
+            className="text-xl font-bold"
             Icon={DollarSign}
           >
             {formatCurrency(totalMaintenanceCost)}

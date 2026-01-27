@@ -99,7 +99,7 @@ export default function AddAssetModal({ open, onOpenChange, departmentOptions }:
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Adicionar Novo Ativo</DialogTitle>
           <DialogDescription>

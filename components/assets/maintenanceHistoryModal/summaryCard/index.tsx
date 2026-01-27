@@ -20,7 +20,7 @@ export const SummaryCard = ({
             <p className="text-sm text-muted-foreground">{title}</p>
             <p className={className}>{children}</p>
           </div>
-          <Icon className="h-8 w-8 text-muted-foreground" />
+          <Icon className="h-5 w-5 text-muted-foreground" />
         </div>
       </CardContent>
     </Card>

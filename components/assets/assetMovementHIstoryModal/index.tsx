@@ -53,7 +53,7 @@ const AssetMovementHistoryModal = ({ asset, triggerButton }:{
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Histórico do Ativo</DialogTitle>
           <DialogDescription>

@@ -1,11 +1,10 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Textarea } from "@/components/ui/textarea"
 import { formatRelativeTime } from "@/lib/utils"
 import { Ticket } from "@/utils/schemas/tickets.schemas"
 import { Lock, MessageSquare } from "lucide-react"
+import { CreateCommentTicketForm } from "./createCommentTicketForm"
 
 export const CommentsTicketCard = ({ ticket } : { ticket: Ticket }) => {
   return (
@@ -40,13 +39,13 @@ export const CommentsTicketCard = ({ ticket } : { ticket: Ticket }) => {
                 </Avatar>
                 <div className="flex-1 space-y-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-medium text-sm">{comment.user?.name}</span>
+                    <span className={`font-medium text-sm ${comment.isInternal && "text-black"}`}>{comment.user?.name}</span>
                     {comment.isInternal && (
                       <Badge
                         variant="secondary"
                         className="text-xs bg-amber-100 text-amber-900 flex items-center gap-1"
                       >
-                        <Lock className="h-3 w-3" />
+                        <Lock size={3} />
                         Interno
                       </Badge>
                     )}
@@ -60,18 +59,10 @@ export const CommentsTicketCard = ({ ticket } : { ticket: Ticket }) => {
             ))
           )}
         </div>
-
         {ticket.status !== "closed" && (
-          <div className="pt-4 border-t space-y-3">
-            <Textarea placeholder="Adicionar comentário..." className="min-h-[100px]" />
-            <div className="flex justify-between items-center">
-              <label className="flex items-center gap-2 text-sm">
-                <input type="checkbox" className="rounded" />
-                <span className="text-muted-foreground">Comentário interno (não visível ao solicitante)</span>
-              </label>
-              <Button size="sm">Adicionar Comentário</Button>
-            </div>
-          </div>
+          <CreateCommentTicketForm 
+            ticket={ticket}
+          />
         )}
       </CardContent>
     </Card>
