@@ -14,15 +14,13 @@ import { ReactNode, useState } from "react"
 import { useForm } from "react-hook-form"
 import { Select as SelectOptions } from "@/components/select"
 import { useCreateTicket } from "@/utils/hooks/tickets/useCreateTicket"
+import { Option } from "@/types/options"
 
 interface CreateTicketProps {
   asset?: Asset
   variant?: "outline" | "default"
   triggerButton?: ReactNode
-  assetsOptions?: {
-    label: string
-    value: string
-  }[]
+  assetsOptions?: Option[]
 }
 
 const CreateTicketModal = ({

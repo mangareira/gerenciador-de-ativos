@@ -17,6 +17,7 @@ export const Select = ({
   options = [],
   placeholder,
   value,
+  className
 }: SelectProps) => {
   const formattedValue = useMemo(() => {
     return options.find((option) => option.value === value)?.value || '';
@@ -32,7 +33,7 @@ export const Select = ({
       onValueChange={handleChange}
       disabled={disable}
     >
-      <SelectTrigger>
+      <SelectTrigger className={className}>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>

@@ -23,11 +23,12 @@ import { Select as SelectOptions } from "@/components/select";
 import { useCreateAsset } from "@/utils/hooks/assets/useCreateAssets";
 import { CreateAsset, CreateAssetSchema } from "@/utils/schemas/assets.schemas";
 import { useCreateMovementHistory } from "@/utils/hooks/movementHistory/useCreateMovementHistory";
+import { Option } from "@/types/options";
 
 interface AddAssetModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  departmentOptions: { value: string; label: string }[];
+  departmentOptions: Option[];
 }
 
 export default function AddAssetModal({ open, onOpenChange, departmentOptions }: AddAssetModalProps) {

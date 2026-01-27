@@ -5,6 +5,7 @@ import { MaintenanceHistoryModal } from "../maintenanceHistoryModal"
 import { AllocateAssetModal } from "../allocateAssetModal"
 import AssetMovementHistoryModal from "../assetMovementHIstoryModal"
 import CreateTicketModal from "@/components/ticket/createTicketModal"
+import { Option } from "@/types/options"
 
 function QuickActionsCard({ 
   asset, 
@@ -14,22 +15,10 @@ function QuickActionsCard({
   assetsOptions
 }:{
   asset: Asset, 
-  technicianOptions: {
-    label: string,
-    value: string
-  }[]
-  assignedToOptions: {
-    label: string,
-    value: string
-  }[]
-  departamentOptions: {
-    label: string,
-    value: string
-  }[]
-  assetsOptions: {
-    label: string
-    value: string
-  }[]
+  technicianOptions: Option[]
+  assignedToOptions: Option[]
+  departamentOptions: Option[]
+  assetsOptions: Option[]
 }) {
   return (
     <Card>

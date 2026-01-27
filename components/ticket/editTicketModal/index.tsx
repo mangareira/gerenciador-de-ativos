@@ -12,18 +12,13 @@ import { Edit, Loader2, Save } from "lucide-react"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { Option } from "@/types/options"
 
 
 export const EditTicketModal = ({ ticket, technicianOptions, assetsOptions } : { 
   ticket : Ticket
-  technicianOptions: {
-    label: string
-    value: string 
-  }[]
-  assetsOptions: {
-    label: string
-    value: string 
-  }[]  
+  technicianOptions: Option[]
+  assetsOptions: Option[]  
 }) => {
   const [open, setOpen] = useState(false)
 

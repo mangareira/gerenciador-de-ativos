@@ -1,3 +1,4 @@
+import { Option } from "@/types/options";
 import { useEditAsset } from "@/utils/hooks/assets/useEditAsset";
 import { useCreateMovementHistory } from "@/utils/hooks/movementHistory/useCreateMovementHistory";
 import { Asset, UpdateAsset } from "@/utils/schemas/assets.schemas";
@@ -5,8 +6,8 @@ import { CreateAssetMovement } from "@/utils/schemas/assetsMovementHistory.schem
 
 interface UseEditAssetSubmitProps {
   asset: Asset;
-  departmentOptions: { value: string; label: string }[];
-  assignedToOptions?: { value: string; label: string }[];
+  departmentOptions: Option[];
+  assignedToOptions?: Option[];
   onSuccess?: () => void;
 }
 

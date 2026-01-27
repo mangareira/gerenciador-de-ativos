@@ -1,12 +1,10 @@
 import { Asset } from "@/utils/schemas/assets.schemas"
+import { Option } from "./options"
 
 export interface MaintenanceModalProps {
   asset: Asset
   triggerButton?: React.ReactNode
-  technicianOptions: {
-    label: string
-    value: string
-  }[]
+  technicianOptions: Option[]
 }
 
 export interface MaintenanceRecord {

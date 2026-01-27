@@ -1,12 +1,8 @@
 import { CreateAssetMovement } from "@/utils/schemas/assetsMovementHistory.schemas";
 import { Asset, UpdateAsset } from "@/utils/schemas/assets.schemas";
+import { Option } from "@/types/options";
 
-export interface DepartmentOption {
-  value: string;
-  label: string;
-}
 
-// Mapeamento de status (inglês -> português)
 const statusLabels: Record<string, string> = {
   available: 'Disponível',
   in_use: 'Em Uso',
@@ -19,7 +15,7 @@ export function generateAssetMovements(
   updatedAsset: Asset,
   originalAsset: Asset,
   data: UpdateAsset,
-  departmentOptions: DepartmentOption[]
+  departmentOptions: Option[]
 ): CreateAssetMovement[] {
   const movements: CreateAssetMovement[] = [];
 

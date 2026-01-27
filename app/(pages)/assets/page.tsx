@@ -2,9 +2,10 @@
 import AddAssetModal from "@/components/assets/addAssetModal";
 import AssetsCard from "@/components/assets/assetsCard";
 import AssetsSkeleton from "@/components/assets/assetsSkeleton";
-import SearchAssets from "@/components/assets/searchAssets";
 import SummaryStatus from "@/components/assets/summaryStatus";
+import SearchTool from "@/components/search";
 import { Button } from "@/components/ui/button";    
+import { statusOptions, typeOptions } from "@/utils/constants/assets-options-search";
 import { useGetAssets } from "@/utils/hooks/assets/useGetAssets";
 import { useGetDepartments } from "@/utils/hooks/department/useGetDepartments";
 import { useGetAllUsers } from "@/utils/hooks/user/useGetAllUsers";
@@ -48,6 +49,7 @@ export default function AssetsPage() {
     value: user.id
   }))
 
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -69,10 +71,13 @@ export default function AssetsPage() {
         onOpenChange={setIsAddModalOpen} 
       />
       
-      <SearchAssets 
+      <SearchTool
         onSearchChange={setSearchTerm}
         onTypeChange={setTypeFilter}
         onStatusChange={setStatusFilter}
+        statusOptions={statusOptions}
+        typeOptions={typeOptions}
+        titlePlaceholder="Buscar por nome, modelo, serial..."
       />
       {
         isLoading && !assets ? (

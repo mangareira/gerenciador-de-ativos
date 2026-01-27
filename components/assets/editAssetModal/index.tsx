@@ -24,10 +24,11 @@ import { Select as SelectOptions } from "@/components/select";
 import { DynamicSpecifications } from "@/components/ui/dynamic-specifications"
 import { Asset, UpdateAsset, UpdateAssetSchema } from "@/utils/schemas/assets.schemas"
 import { useEditAssetSubmit } from "@/utils/hooks/assets/useEditAssetSubmit"
+import { Option } from "@/types/options"
 
 interface EditAssetModalProps {
   asset: Asset
-  departmentOptions: { value: string; label: string }[]
+  departmentOptions: Option[]
   triggerButton?: React.ReactNode
 }
 

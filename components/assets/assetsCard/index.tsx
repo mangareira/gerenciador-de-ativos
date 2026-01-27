@@ -9,6 +9,7 @@ import { Asset } from "@/utils/schemas/assets.schemas";
 import { AllocateAssetModal } from "../allocateAssetModal";
 import { EditAssetModal } from "../editAssetModal";
 import AssetMovementHistoryModal from "../assetMovementHIstoryModal";
+import { Option } from "@/types/options";
 
 const assetIcons = {
   desktop: Package,
@@ -26,14 +27,8 @@ export default function AssetsCard({
   assignedToOptions
 }: { 
   asset: Asset
-  departamentOptions: {
-    label: string
-    value: string
-  }[] 
-  assignedToOptions: {
-    label: string
-    value: string
-  }[] 
+  departamentOptions:Option[] 
+  assignedToOptions: Option[] 
 }) {
   const Icon = assetIcons[asset.type];
   return (

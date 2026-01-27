@@ -25,12 +25,13 @@ import { Select } from "@/components/select"
 import { AllocateAsset, allocateAssetSchema } from "@/utils/schemas/allocateAsset.schemas"
 import { DatePicker } from "@/components/datePicker"
 import { useEditAssetSubmit } from "@/utils/hooks/assets/useEditAssetSubmit"
+import { Option } from "@/types/options"
 
 interface AllocateAssetModalProps {
   asset: Asset
   triggerButton?: React.ReactNode
-  departmentOptions: { value: string; label: string }[]
-  assignedToOptions: { value: string; label: string }[]
+  departmentOptions: Option[]
+  assignedToOptions: Option[]
 }
 
 export function AllocateAssetModal({ 
