@@ -60,7 +60,7 @@ export const CommentsTicketCard = ({ ticket } : { ticket: Ticket }) => {
           )}
         </div>
         {ticket.status !== "closed" && (
-          <CreateCommentTicketForm 
+          <CreateCommentTicketForm
             ticket={ticket}
           />
         )}
