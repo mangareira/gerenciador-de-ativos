@@ -31,6 +31,7 @@ model User {
   // Relations
   managedDepartments Department[]    @relation("DepartmentManager")
   assignedAssets     Asset[]         @relation("AssetAssignment")
+  licenses           License[]
   movementsFrom      AssetMovement[] @relation("MovementFromUser")
   movementsTo        AssetMovement[] @relation("MovementToUser")
   movementTechnician AssetMovement[] @relation("MovementTechnician")
@@ -50,8 +51,9 @@ model Department {
   location   String
 
   // Relations
-  manager User    @relation("DepartmentManager", fields: [managerId], references: [id])
-  assets  Asset[]
+  manager  User      @relation("DepartmentManager", fields: [managerId], references: [id])
+  assets   Asset[]
+  licenses License[]
 
   @@map("departments")
 }
@@ -225,4 +227,33 @@ model TicketComment {
   user   User   @relation(fields: [userId], references: [id])
 
   @@map("ticket_comments")
+}
+
+enum LicenseType {
+  perpetual
+  subscription
+  concurrent
+  named_user
+}
+
+model License {
+  id           String      @id @default(cuid())
+  softwareName String
+  vendor       String
+  licenseType  LicenseType
+  licenseKey   String
+  totalSeats   Int
+  purchaseDate DateTime
+  expiryDate   DateTime?
+  annualCost   Int
+  departmentId String
+  notes        String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  // Relations
+  department Department @relation(fields: [departmentId], references: [id])
+  users      User[]
+
+  @@map("licenses")
 }

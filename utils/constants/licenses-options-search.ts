@@ -13,3 +13,5 @@ export const statusOptions = [
   { value: 'expired', label: 'Expirada' },
   { value: 'inactive', label: 'Inativa' },
 ];
+
+export const LicenseTypeOptions = typeOptions.filter(o => o.value !== 'all');

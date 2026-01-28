@@ -74,3 +74,12 @@ export const TicketCategoryTypeSchema = z.enum([
 ])
 
 export type TicketCategoryType = z.infer<typeof TicketCategoryTypeSchema>
+
+export const LicenseTypeSchema = z.enum([
+  "perpetual", 
+  "subscription", 
+  "concurrent", 
+  "named_user"
+])
+
+export type LicenseType = z.infer<typeof LicenseTypeSchema>

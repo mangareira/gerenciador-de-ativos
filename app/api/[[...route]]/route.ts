@@ -5,6 +5,7 @@ import  user from './users'
 import  departament from './departament'
 import ticket from './tickets'
 import comment from './comments'
+import license from './licenses'
 
 export const runtime = 'nodejs'
 
@@ -14,6 +15,7 @@ const router = app
   .route('/asset', asset)
   .route('/user', user)
   .route('/departament', departament)
+  .route('/license', license)
   .route('/ticket', ticket)
   .route('/comment', comment)
 
