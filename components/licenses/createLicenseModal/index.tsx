@@ -35,6 +35,7 @@ const CreateLicenseModal = ({
       licenseKey: "",
       licenseType: undefined,
       purchaseDate: new Date(),
+      status: "active",
       notes: "",
       softwareName: "",
       totalSeats: 0,
@@ -44,7 +45,7 @@ const CreateLicenseModal = ({
 
   const { mutate, isPending } = useCreateLicense()
 
-  const onSubmit = async (data: CreateLicense) => {
+  const onSubmit = (data: CreateLicense) => {
     mutate(data, {
       onSuccess: () => {
         setOpen(false)
@@ -54,6 +55,17 @@ const CreateLicenseModal = ({
     form.reset()
   }
 
+  console.log(form.formState.errors);
+  
+
+  const handleNumberChange = (fieldName: keyof CreateLicense, value: string) => {
+    const numericValue = value === "" ? 0 : Number(value);
+    form.setValue(fieldName, numericValue, {
+      shouldValidate: true,
+      shouldDirty: true,
+      shouldTouch: true
+    });
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -122,6 +134,7 @@ const CreateLicenseModal = ({
                       <Select
                         options={LicenseTypeOptions}
                         placeholder="Selecione o tipo"
+                        disabled={isPending}
                         {...field}
                       />
                     </FormControl>
@@ -141,6 +154,7 @@ const CreateLicenseModal = ({
                         min={1}
                         required 
                         {...field} 
+                        onChange={(e) => handleNumberChange("totalSeats", e.target.value)}
                       />
                     </FormControl>
                     <FormMessage />
@@ -175,7 +189,7 @@ const CreateLicenseModal = ({
                   <FormItem> 
                     <FormLabel >Data de Compra *</FormLabel> 
                     <FormControl> 
-                      <DatePicker {...field} /> 
+                      <DatePicker disabled={isPending} {...field} /> 
                     </FormControl> 
                   </FormItem> 
                 )} 
@@ -187,7 +201,7 @@ const CreateLicenseModal = ({
                   <FormItem> 
                     <FormLabel >Data de Expiração</FormLabel> 
                     <FormControl> 
-                      <DatePicker {...field} /> 
+                      <DatePicker disabled={isPending} {...field} /> 
                     </FormControl> 
                   </FormItem> 
                 )} 
@@ -208,6 +222,7 @@ const CreateLicenseModal = ({
                         step={0.01}
                         required 
                         {...field} 
+                        onChange={(e) => handleNumberChange("annualCost", e.target.value)}
                       />
                     </FormControl>
                     <FormMessage />
@@ -224,6 +239,7 @@ const CreateLicenseModal = ({
                       <Select
                         options={departamentsOptions}
                         placeholder="Selecione o departamento"
+                        disabled={isPending}
                         {...field}
                       />
                     </FormControl>
@@ -243,6 +259,7 @@ const CreateLicenseModal = ({
                       className="resize-none"
                       onKeyDown={(e) => e.stopPropagation()}
                       rows={4}
+                      disabled={isPending}
                       {...field}
                     />
                   </FormControl>

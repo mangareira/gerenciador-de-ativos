@@ -236,20 +236,27 @@ enum LicenseType {
   named_user
 }
 
+enum LicenseStatus {
+  active
+  expired
+  suspended
+}
+
 model License {
-  id           String      @id @default(cuid())
+  id           String        @id @default(cuid())
   softwareName String
   vendor       String
   licenseType  LicenseType
   licenseKey   String
+  status       LicenseStatus
   totalSeats   Int
   purchaseDate DateTime
   expiryDate   DateTime?
   annualCost   Int
   departmentId String
   notes        String?
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 
   // Relations
   department Department @relation(fields: [departmentId], references: [id])

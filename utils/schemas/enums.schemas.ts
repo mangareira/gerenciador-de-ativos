@@ -83,3 +83,11 @@ export const LicenseTypeSchema = z.enum([
 ])
 
 export type LicenseType = z.infer<typeof LicenseTypeSchema>
+
+export const LicenseStatusSchema = z.enum([
+  "active",
+  "expired",
+  "suspended"
+])
+
+export type LicenseStatus = z.infer<typeof LicenseStatusSchema>

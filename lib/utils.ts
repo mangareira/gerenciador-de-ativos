@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { MaintenanceRecord } from "@/types/maintence-props";
 import { Asset} from "@/utils/schemas/assets.schemas";
-import { AssetStatus, TicketPriorityType, TicketStatusType } from "@/utils/schemas/enums.schemas";
+import { AssetStatus, LicenseStatus, TicketPriorityType, TicketStatusType } from "@/utils/schemas/enums.schemas";
 import { clsx, type ClassValue } from "clsx"
+import { subMonths } from "date-fns";
 import { twMerge } from "tailwind-merge"
 
 export function cn(...inputs: ClassValue[]) {
@@ -133,6 +134,15 @@ export function getDaysUntil(date: Date | string): number {
   return Math.floor((d.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
 }
 
+export function computeRenewalDate(expiryDate?: Date | string | null): Date | null {
+  if (!expiryDate) return null
+
+  const date = expiryDate instanceof Date ? expiryDate : new Date(expiryDate)
+  if (Number.isNaN(date.getTime())) return null
+
+  return subMonths(date, 1)
+}
+
 
 export const maintenanceTypeLabels: Record<MaintenanceRecord["maintenanceType"], string> = {
   preventive: "Preventiva",
@@ -170,4 +180,13 @@ export function getTicketPriorityColor(priority: TicketPriorityType): string {
     critical: "bg-red-100 text-red-800 border-red-200",
   }
   return colors[priority]
+}
+
+export function getLicenseStatusColor(status: LicenseStatus): string {
+  const colors = {
+    active: "bg-green-100 text-green-800 border-green-200",
+    expired: "bg-red-100 text-red-800 border-red-200",
+    suspended: "bg-yellow-100 text-yellow-800 border-yellow-200",
+  }
+  return colors[status]
 }

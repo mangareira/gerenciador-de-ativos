@@ -1,5 +1,5 @@
 import z from "zod";
-import { LicenseTypeSchema } from "./enums.schemas";
+import { LicenseStatusSchema, LicenseTypeSchema } from "./enums.schemas";
 import { DepartmentSchema } from "./department.schemas";
 import { UserSchema } from "./user.schemas";
 
@@ -9,6 +9,7 @@ export const LicenseSchema = z.object({
   vendor: z.string(),
   licenseType: LicenseTypeSchema,
   licenseKey: z.string(),
+  status: LicenseStatusSchema,
   totalSeats: z.number(),
   purchaseDate: z.coerce.date<Date>(),
   expiryDate: z.coerce.date<Date>().optional().nullable(),
@@ -28,6 +29,7 @@ export const CreateLicenseSchema = z.object({
   vendor: z.string(),
   licenseType: LicenseTypeSchema,
   licenseKey: z.string(),
+  status: LicenseStatusSchema,
   totalSeats: z.number(),
   purchaseDate: z.coerce.date<Date>(),
   expiryDate: z.coerce.date<Date>().optional(),
