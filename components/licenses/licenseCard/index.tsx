@@ -4,6 +4,7 @@ import { Progress } from "@/components/ui/progress"
 import { computeRenewalDate, formatCurrency, formatDate, getDaysUntil, getLicenseStatusColor, getStatusLabel, isExpiringSoon } from "@/lib/utils"
 import { License } from "@/utils/schemas/license.schemas"
 import { AlertTriangle, Calendar, DollarSign, FileKey, Users } from "lucide-react"
+import { ManageAllocationsModal } from "../manageAllocationsModal"
 
 export const LicenseCard = ({ licenses } : { licenses: License[] }) => {
   if(licenses.length === 0) {
@@ -146,7 +147,7 @@ export const LicenseCard = ({ licenses } : { licenses: License[] }) => {
 
               <div className="mt-4 flex flex-wrap gap-2">
                 {/* <LicenseDetailsModal license={license} department={department} /> */}
-                {/* <ManageAllocationsModal license={license} users={mockUsers} /> */}
+                <ManageAllocationsModal license={license} />
                 {/* {license.licenseType === "subscription" && (
                   <RenewLicenseModal license={license} />
                 )} */}

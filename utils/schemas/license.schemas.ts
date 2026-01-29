@@ -39,3 +39,9 @@ export const CreateLicenseSchema = z.object({
 })
 
 export type CreateLicense = z.infer<typeof CreateLicenseSchema>
+
+export const AllocateUserLicenseSchema = z.object({
+  userId: z.cuid()
+})
+
+export type AllocateUserLicense = z.infer<typeof AllocateUserLicenseSchema>

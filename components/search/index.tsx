@@ -1,9 +1,8 @@
 "use client"
 
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Filter, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Select as ReusableSelect } from "@/components/select";
 import { SearchAssetsProps } from "@/types/search-props";
@@ -21,8 +20,8 @@ export default function SearchTool({
 }: SearchAssetsProps) {
   const [searchInput, setSearchInput] = useState("");
 
-  const defaultType = typeOptions.find((o) => o.value === 'all')?.value ?? typeOptions[0]?.value ?? '';
-  const defaultStatus = statusOptions.find((o) => o.value === 'all')?.value ?? statusOptions[0]?.value ?? '';
+  const defaultType = typeOptions?.find((o) => o.value === 'all')?.value ?? typeOptions?.[0]?.value ?? '';
+  const defaultStatus = statusOptions?.find((o) => o.value === 'all')?.value ?? statusOptions?.[0]?.value ?? '';
 
   const [typeValue, setTypeValue] = useState<string | undefined>(defaultType);
   const [statusValue, setStatusValue] = useState<string | undefined>(defaultStatus);
@@ -50,33 +49,37 @@ export default function SearchTool({
               onChange={(e) => setSearchInput(e.target.value)}
             />
           </div>
+          {
+            typeOptions ?
+              <ReusableSelect
+                options={typeOptions}
+                placeholder={typePlaceholder}
+                onChange={(val) => {
+                  setTypeValue(val);
+                  onTypeChange?.(val ?? '');
+                }}
+                value={typeValue}
+                className="w-full md:w-[180px]"
+              />
+            :
+              null
+          }  
 
-          <ReusableSelect
-            options={typeOptions}
-            placeholder={typePlaceholder}
-            onChange={(val) => {
-              setTypeValue(val);
-              onTypeChange?.(val ?? '');
-            }}
-            value={typeValue}
-            className="w-full md:w-[180px]"
-          />
-
-          <ReusableSelect
-            options={statusOptions}
-            placeholder={statusPlaceholder}
-            onChange={(val) => {
-              setStatusValue(val);
-              onStatusChange?.(val ?? '');
-            }}
-            value={statusValue}
-            className="w-full md:w-[180px]"
-          />
-
-          <Button variant="outline">
-            <Filter className="mr-2 h-4 w-4" />
-            Mais Filtros
-          </Button>
+          {
+            statusOptions ?
+              <ReusableSelect
+                options={statusOptions}
+                placeholder={statusPlaceholder}
+                onChange={(val) => {
+                  setStatusValue(val);
+                  onStatusChange?.(val ?? '');
+                }}
+                value={statusValue}
+                className="w-full md:w-[180px]"
+              />
+            : 
+              null
+          }
         </div>
       </CardContent>
     </Card>
