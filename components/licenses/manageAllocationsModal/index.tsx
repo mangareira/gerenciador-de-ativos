@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Form, FormField } from "@/components/ui/form"
 import { Progress } from "@/components/ui/progress"
+import { useAllocateUserLicense } from "@/utils/hooks/licenses/useAllocateUserLicense"
 import { useGetAllUsers } from "@/utils/hooks/user/useGetAllUsers"
 import { AllocateUserLicense, AllocateUserLicenseSchema, License } from "@/utils/schemas/license.schemas"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -17,14 +18,16 @@ export const ManageAllocationsModal = ({ license } : { license: License }) => {
   const [open, setOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState("");
 
-  const form = useForm({
+  const form = useForm<AllocateUserLicense>({
     resolver: zodResolver(AllocateUserLicenseSchema),
     defaultValues: {
-      userId: ""
+      userId: "",
+      allocateType: "allocate"
     }
   })
 
   const { data: users } = useGetAllUsers()
+  const { isPending, mutate } = useAllocateUserLicense(license.id)
 
   const usersOptions = (users ?? []).map((user) => ({
     label: user.name,
@@ -46,11 +49,11 @@ export const ManageAllocationsModal = ({ license } : { license: License }) => {
   const availableSeats = license.totalSeats - (license.users?.length || 0)
 
   const handleAllocate = (data: AllocateUserLicense) => {
-    console.log(data);
+    mutate(data)
   }
 
-  const handleDeallocate = (userId: string) => {
-    console.log(userId);
+  const handleDeallocate = (data: AllocateUserLicense) => {
+    mutate(data)
   }
   
   return (
@@ -153,10 +156,10 @@ export const ManageAllocationsModal = ({ license } : { license: License }) => {
                     variant="ghost"
                     size="sm"
                     className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                    onClick={() => handleDeallocate(user.id)}
-                    // disabled={isDeallocating}
+                    onClick={() => handleDeallocate({ userId: user.id, allocateType: "deallocate"})}
+                    disabled={isPending}
                   >
-                    {false ? (
+                    {isPending ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
                     ) : (
                       <>

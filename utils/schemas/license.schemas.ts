@@ -41,7 +41,8 @@ export const CreateLicenseSchema = z.object({
 export type CreateLicense = z.infer<typeof CreateLicenseSchema>
 
 export const AllocateUserLicenseSchema = z.object({
-  userId: z.cuid()
+  userId: z.cuid(),
+  allocateType: z.enum(["allocate", "deallocate"])
 })
 
 export type AllocateUserLicense = z.infer<typeof AllocateUserLicenseSchema>
