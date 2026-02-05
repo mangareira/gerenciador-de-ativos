@@ -210,3 +210,32 @@ export function getLicenseDetails(license: License) {
 
   return { utilizationPercent, isExpiring, daysUntilExpiry, renewalDate }
 } 
+
+export const parseCurrency = (value: string): number => {
+  if (!value) return 0;
+  
+  const onlyNumbers = value.replace(/[^\d]/g, '');
+  
+  if (!onlyNumbers) return 0;
+  
+  return parseFloat(onlyNumbers) / 100;
+};
+
+export const handleCurrencyChange = <T>(
+  fieldName: keyof T,
+  value: string,
+  setValue: (name: keyof T, value: number) => void
+) => {
+  const numericValue = parseCurrency(value);
+  setValue(fieldName, numericValue);
+};
+
+export const handleSimpleNumberChange = <T>(
+  fieldName: keyof T,
+  value: string,
+  setValue: (name: keyof T, value: number) => void
+) => {
+  const onlyNumbers = value.replace(/\D/g, '');
+  const numericValue = onlyNumbers ? parseInt(onlyNumbers, 10) : 0;
+  setValue(fieldName, numericValue);
+};

@@ -34,6 +34,9 @@ export const ManageAllocationsModal = ({ license } : { license: License }) => {
     value: user.id
   }))
 
+  console.log(usersOptions);
+  
+
   const filteredAllocatedUsers = useMemo(() => {
     if(!license.users) return []
 

@@ -46,3 +46,19 @@ export const AllocateUserLicenseSchema = z.object({
 })
 
 export type AllocateUserLicense = z.infer<typeof AllocateUserLicenseSchema>
+
+export const UpdateLicenseSchema = z.object({
+  softwareName: z.string().optional(),
+  vendor: z.string().optional(),
+  licenseType: LicenseTypeSchema.optional(),
+  licenseKey: z.string().optional(),
+  status: LicenseStatusSchema.optional(),
+  totalSeats: z.number().optional(),
+  purchaseDate: z.coerce.date<Date>().optional(),
+  expiryDate: z.coerce.date<Date>().optional(),
+  annualCost: z.number().optional(),
+  departmentId: z.string().optional(),
+  notes: z.string().optional(),
+})
+
+export type UpdateLicense = z.infer<typeof UpdateLicenseSchema>

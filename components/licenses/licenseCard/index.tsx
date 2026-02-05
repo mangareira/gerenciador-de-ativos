@@ -6,6 +6,7 @@ import { License } from "@/utils/schemas/license.schemas"
 import { AlertTriangle, Calendar, DollarSign, FileKey, Users } from "lucide-react"
 import { ManageAllocationsModal } from "../manageAllocationsModal"
 import { LicenseDetailsModal } from "../licenseDetailsModal"
+import { RenewLicenseModal } from "../renewLicenseModal"
 
 export const LicenseCard = ({ licenses } : { licenses: License[] }) => {
   if(licenses.length === 0) {
@@ -146,9 +147,9 @@ export const LicenseCard = ({ licenses } : { licenses: License[] }) => {
               <div className="mt-4 flex flex-wrap gap-2">
                 <LicenseDetailsModal license={license} />
                 <ManageAllocationsModal license={license} />
-                {/* {license.licenseType === "subscription" && (
+                {license.licenseType === "subscription" && (
                   <RenewLicenseModal license={license} />
-                )} */}
+                )}
               </div>
             </CardContent>
           </Card>
