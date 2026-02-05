@@ -8,7 +8,7 @@ import SearchTool from "@/components/search"
 import { statusOptions, typeOptions } from "@/utils/constants/licenses-options-search";
 import { useGetDepartments } from "@/utils/hooks/department/useGetDepartments";
 import { useGetAllLicenses } from "@/utils/hooks/licenses/useGetAllLicenses";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 export default function LicensesPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -18,6 +18,24 @@ export default function LicensesPage() {
   const { data: departments } = useGetDepartments();
 
   const { data: licenses, isLoading } = useGetAllLicenses()
+
+  
+  const filteredLicenses = useMemo(() => { 
+    if (!licenses) return [];
+    
+    return licenses.filter((license) => {
+      const matchesSearch =
+        license.softwareName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        license.vendor.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        license.licenseKey.toLowerCase().includes(searchTerm.toLowerCase())
+
+      const matchesType = typeFilter === "all" || license.licenseType === typeFilter
+      const matchesStatus = statusFilter === "all" || license.status === statusFilter
+
+      return matchesSearch && matchesType && matchesStatus
+      }
+    )
+  }, [licenses, searchTerm, statusFilter, typeFilter])
   
   const departmentOptions = (departments ?? []).map((department) => ({
     label: department.name,
@@ -52,8 +70,8 @@ export default function LicensesPage() {
         </>
         : 
           <>
-            <LicenseCard licenses={licenses || []}  />
-            <SummaryLicense licenses={licenses || []} />
+            <LicenseCard licenses={filteredLicenses}  />
+            <SummaryLicense licenses={filteredLicenses} />
           </>
       }
     </div>

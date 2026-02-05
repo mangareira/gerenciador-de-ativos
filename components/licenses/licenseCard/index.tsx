@@ -1,10 +1,11 @@
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
-import { computeRenewalDate, formatCurrency, formatDate, getDaysUntil, getLicenseStatusColor, getStatusLabel, isExpiringSoon } from "@/lib/utils"
+import { formatCurrency, formatDate, getLicenseDetails, getLicenseStatusColor, getStatusLabel } from "@/lib/utils"
 import { License } from "@/utils/schemas/license.schemas"
 import { AlertTriangle, Calendar, DollarSign, FileKey, Users } from "lucide-react"
 import { ManageAllocationsModal } from "../manageAllocationsModal"
+import { LicenseDetailsModal } from "../licenseDetailsModal"
 
 export const LicenseCard = ({ licenses } : { licenses: License[] }) => {
   if(licenses.length === 0) {
@@ -21,10 +22,7 @@ export const LicenseCard = ({ licenses } : { licenses: License[] }) => {
   return (
     <div className="grid gap-4">
       {licenses.map((license) => {
-        const utilizationPercent = Math.round(((license.users?.length || 0) / license.totalSeats) * 100)
-        const isExpiring = license.expiryDate && isExpiringSoon(license.expiryDate, 60)
-        const daysUntilExpiry = license.expiryDate ? getDaysUntil(license.expiryDate) : null
-        const renewalDate = license.expiryDate ? computeRenewalDate(license.expiryDate) : null
+        const { daysUntilExpiry, isExpiring, renewalDate, utilizationPercent } = getLicenseDetails(license)
 
         return (
           <Card key={license.id} className="hover:shadow-md transition-shadow">
@@ -146,7 +144,7 @@ export const LicenseCard = ({ licenses } : { licenses: License[] }) => {
               )}
 
               <div className="mt-4 flex flex-wrap gap-2">
-                {/* <LicenseDetailsModal license={license} department={department} /> */}
+                <LicenseDetailsModal license={license} />
                 <ManageAllocationsModal license={license} />
                 {/* {license.licenseType === "subscription" && (
                   <RenewLicenseModal license={license} />

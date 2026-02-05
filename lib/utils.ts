@@ -2,6 +2,7 @@
 import { MaintenanceRecord } from "@/types/maintence-props";
 import { Asset} from "@/utils/schemas/assets.schemas";
 import { AssetStatus, LicenseStatus, TicketPriorityType, TicketStatusType } from "@/utils/schemas/enums.schemas";
+import { License } from "@/utils/schemas/license.schemas";
 import { clsx, type ClassValue } from "clsx"
 import { subMonths } from "date-fns";
 import { twMerge } from "tailwind-merge"
@@ -190,3 +191,22 @@ export function getLicenseStatusColor(status: LicenseStatus): string {
   }
   return colors[status]
 }
+
+export function getLicenseTypeLabel(type: string) {
+  const labels: Record<string, string> = {
+    subscription: "Assinatura",
+    perpetual: "Perpétua",
+    concurrent: "Concorrente",
+    "named-user": "Por Usuário",
+  }
+  return labels[type] || type
+}
+
+export function getLicenseDetails(license: License) {
+  const utilizationPercent = Math.round(((license.users?.length || 0) / license.totalSeats) * 100)
+  const isExpiring = license.expiryDate && isExpiringSoon(license.expiryDate, 60)
+  const daysUntilExpiry = license.expiryDate ? getDaysUntil(license.expiryDate) : null
+  const renewalDate = license.expiryDate ? computeRenewalDate(license.expiryDate) : null
+
+  return { utilizationPercent, isExpiring, daysUntilExpiry, renewalDate }
+} 
