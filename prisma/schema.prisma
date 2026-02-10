@@ -103,6 +103,7 @@ model Asset {
   movements    AssetMovement[]
   maintenances Maintenance[]
   tickets      Ticket[]
+  contract     Contract[]
 
   @@map("assets")
 }
@@ -263,4 +264,51 @@ model License {
   users      User[]
 
   @@map("licenses")
+}
+
+enum ContractType {
+  maintenance
+  support
+  lease
+  warranty
+}
+
+enum ContractStatus {
+  active
+  expired
+  pending
+  cancelled
+}
+
+enum PaymentFrequency {
+  monthly
+  quarterly
+  annually
+  one_time
+}
+
+model Contract {
+  id               String           @id @default(cuid())
+  title            String
+  vendor           String
+  type             ContractType
+  status           ContractStatus
+  contractNumber   String
+  startDate        DateTime
+  endDate          DateTime
+  value            Float
+  paymentFrequency PaymentFrequency
+  autoRenew        Boolean          @default(false)
+  notificationDays Int
+  contactPerson    String
+  contactEmail     String
+  contactPhone     String
+  notes            String?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  // Relations
+  contractAssets Asset[]
+
+  @@map("contracts")
 }

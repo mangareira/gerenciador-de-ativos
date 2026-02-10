@@ -91,3 +91,30 @@ export const LicenseStatusSchema = z.enum([
 ])
 
 export type LicenseStatus = z.infer<typeof LicenseStatusSchema>
+
+export const ContractTypeSchema = z.enum([
+  "maintenance", 
+  "support", 
+  "lease", 
+  "warranty"
+])
+
+export type ContractType = z.infer<typeof ContractTypeSchema>
+
+export const ContractStatusSchema = z.enum([
+  "active", 
+  "expired", 
+  "pending", 
+  "cancelled"
+])
+
+export type ContractStatus = z.infer<typeof ContractStatusSchema>
+
+export const ContractPaymentTypeSchema = z.enum([
+  "monthly", 
+  "quarterly", 
+  "annually", 
+  "one_time"
+])
+
+export type ContractPaymentType = z.infer<typeof ContractPaymentTypeSchema>
