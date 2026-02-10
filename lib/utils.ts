@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { MaintenanceRecord } from "@/types/maintence-props";
 import { Asset} from "@/utils/schemas/assets.schemas";
-import { AssetStatus, LicenseStatus, TicketPriorityType, TicketStatusType } from "@/utils/schemas/enums.schemas";
+import { AssetStatus, ContractStatus, LicenseStatus, TicketPriorityType, TicketStatusType } from "@/utils/schemas/enums.schemas";
 import { License } from "@/utils/schemas/license.schemas";
 import { clsx, type ClassValue } from "clsx"
 import { subMonths } from "date-fns";
@@ -144,6 +144,44 @@ export function computeRenewalDate(expiryDate?: Date | string | null): Date | nu
   return subMonths(date, 1)
 }
 
+export function formatDuration(startDate: Date | string, endDate: Date | string): string {
+  const start = typeof startDate === "string" ? new Date(startDate) : startDate
+  const end = typeof endDate === "string" ? new Date(endDate) : endDate
+
+  let years = end.getFullYear() - start.getFullYear()
+  let months = end.getMonth() - start.getMonth()
+
+  if (months < 0) {
+    years--
+    months += 12
+  }
+
+  const parts: string[] = []
+  if (years > 0) {
+    parts.push(`${years} ${years === 1 ? "ano" : "anos"}`)
+  }
+  if (months > 0) {
+    parts.push(`${months} ${months === 1 ? "mes" : "meses"}`)
+  }
+  if (parts.length === 0) {
+    const days = Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24))
+    return `${days} ${days === 1 ? "dia" : "dias"}`
+  }
+
+  return parts.join(" e ")
+}
+
+export function formatRemainingDuration(endDate: Date | string): string {
+  const end = typeof endDate === "string" ? new Date(endDate) : endDate
+  const now = new Date()
+
+  if (end.getTime() < now.getTime()) {
+    return "Vencido"
+  }
+
+  return formatDuration(now, end)
+}
+
 
 export const maintenanceTypeLabels: Record<MaintenanceRecord["maintenanceType"], string> = {
   preventive: "Preventiva",
@@ -188,6 +226,16 @@ export function getLicenseStatusColor(status: LicenseStatus): string {
     active: "bg-green-100 text-green-800 border-green-200",
     expired: "bg-red-100 text-red-800 border-red-200",
     suspended: "bg-yellow-100 text-yellow-800 border-yellow-200",
+  }
+  return colors[status]
+}
+
+export function getContractStatusColor(status: ContractStatus): string {
+  const colors = {
+    active: "bg-green-100 text-green-800 border-green-200",
+    expired: "bg-red-100 text-red-800 border-red-200",
+    pending: "bg-yellow-100 text-yellow-800 border-yellow-200",
+    cancelled: "bg-gray-100 text-gray-800 border-gray-200",
   }
   return colors[status]
 }

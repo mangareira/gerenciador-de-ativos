@@ -18,7 +18,7 @@ export const ContractSchema = z.object({
   contactPerson: z.string(),
   contactEmail: z.email(),
   contactPhone: z.string(),
-  contractAssets: AssetSchema.array().nullable().optional(),
+  contractAssets: AssetSchema.array(),
   notes: z.string().nullable().optional(),
   createdAt: z.coerce.date<Date>(),
   updatedAt: z.coerce.date<Date>()
