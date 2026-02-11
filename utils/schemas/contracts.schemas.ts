@@ -11,10 +11,10 @@ export const ContractSchema = z.object({
   contractNumber: z.string(),
   startDate: z.coerce.date<Date>(),
   endDate: z.coerce.date<Date>(),
-  value: z.coerce.number(),
+  value: z.coerce.number<number>(),
   paymentFrequency: ContractPaymentTypeSchema,
   autoRenew: z.boolean().default(false),
-  notificationDays: z.coerce.number(),
+  notificationDays: z.coerce.number<number>(),
   contactPerson: z.string(),
   contactEmail: z.email(),
   contactPhone: z.string(),
@@ -34,10 +34,10 @@ export const CreateContractSchema = z.object({
   contractNumber: z.string(),
   startDate: z.coerce.date<Date>(),
   endDate: z.coerce.date<Date>(),
-  value: z.coerce.number(),
+  value: z.coerce.number<number>(),
   paymentFrequency: ContractPaymentTypeSchema,
   autoRenew: z.boolean().optional(),
-  notificationDays: z.coerce.number(),
+  notificationDays: z.coerce.number<number>(),
   contactPerson: z.string(),
   contactEmail: z.email(),
   contactPhone: z.string(),
@@ -45,3 +45,23 @@ export const CreateContractSchema = z.object({
 })
 
 export type CreateContract = z.infer<typeof CreateContractSchema>
+
+export const UpdateContractSchema = z.object({
+  title: z.string().optional(),
+  vendor: z.string().optional(),
+  type: ContractTypeSchema.optional(),
+  status: ContractStatusSchema.optional(),
+  contractNumber: z.string().optional(),
+  startDate: z.coerce.date<Date>().optional(),
+  endDate: z.coerce.date<Date>().optional(),
+  value: z.coerce.number<number>().optional(),
+  paymentFrequency: ContractPaymentTypeSchema.optional(),
+  autoRenew: z.boolean().optional(),
+  notificationDays: z.coerce.number<number>().optional(),
+  contactPerson: z.string().optional(),
+  contactEmail: z.email().optional(),
+  contactPhone: z.string().optional(),
+  notes: z.string().optional(),
+})
+
+export type UpdateContract = z.infer<typeof UpdateContractSchema>
