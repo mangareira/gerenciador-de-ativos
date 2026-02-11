@@ -1,4 +1,5 @@
 export const typeOptions = [
+  { value: 'all', label: 'Todos' },
   { value: 'maintenance', label: 'Manutenção' },
   { value: 'support', label: 'Suporte' },
   { value: 'lease', label: 'Leasing' },
@@ -11,3 +12,11 @@ export const paymetFrequenceOptions = [
   { value: 'annually', label: 'Anual' },
   { value: 'one_time', label: 'Unico' },
 ];
+
+export const statusOptions = [ 
+  { value: 'all', label: 'Todos' },
+  { value: "active", label: 'Ativo'}, 
+  { value: "expired", label: 'Expirado'}, 
+  { value: "pending", label: 'Pendente'}, 
+  { value: "cancelled", label: 'Cancelado'}
+]

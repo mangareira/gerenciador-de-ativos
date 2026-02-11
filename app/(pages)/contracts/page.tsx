@@ -2,8 +2,11 @@
 
 import { ContractListCard } from "@/components/contracts/contractListCard";
 import { SummaryContracts } from "@/components/contracts/summary";
+import ContractListSkeleton from "@/components/contracts/contractListSkeleton";
+import SummarySkeleton from "@/components/contracts/summarySkeleton";
 import SearchTool from "@/components/search"
 import { Button } from "@/components/ui/button"
+import { statusOptions, typeOptions } from "@/utils/constants/contract-options";
 import { useGetAllContracts } from "@/utils/hooks/contracts/useGetAllContracts";
 import { Plus } from "lucide-react"
 import { useMemo, useState } from "react";
@@ -13,7 +16,7 @@ export default function ContractsPage() {
   const [typeFilter, setTypeFilter] = useState("all");  
   const [statusFilter, setStatusFilter] = useState("all");
 
-  const {data: contracts } = useGetAllContracts()
+  const { data: contracts, isLoading } = useGetAllContracts()
 
   
   const filteredContracts = useMemo(() => {
@@ -48,14 +51,18 @@ export default function ContractsPage() {
         onSearchChange={setSearchTerm}
         onStatusChange={setStatusFilter}
         onTypeChange={setTypeFilter}
-        // statusOptions={statusOptions}
-        // typeOptions={typeOptions}
+        statusOptions={statusOptions}
+        typeOptions={typeOptions}
         titlePlaceholder="Buscar por título, fornecedor ou número do contrato..."
       />
 
-      <ContractListCard contracts={filteredContracts}  /> 
+      {isLoading ? (
+        <ContractListSkeleton />
+      ) : (
+        <ContractListCard contracts={filteredContracts} />
+      )}
 
-      <SummaryContracts contracts={filteredContracts} />
+      {isLoading ? <SummarySkeleton /> : <SummaryContracts contracts={filteredContracts} />}
     </div>
   )
 }

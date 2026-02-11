@@ -6,6 +6,7 @@ import { Contract } from "@/utils/schemas/contracts.schemas"
 import { AlertTriangle, Calendar, DollarSign, Eye, FileText, Mail, Package, Phone } from "lucide-react"
 import Link from "next/link"
 import { EditContractModal } from "../editContractModal"
+import { RenewContractModal } from "../renewContractModal"
 
 export const ContractListCard = ({ contracts }:{ contracts: Contract[] }) => {
   return (
@@ -190,7 +191,7 @@ export const ContractListCard = ({ contracts }:{ contracts: Contract[] }) => {
                   </Link>
                 </Button>
                 <EditContractModal contract={contract} />
-                {/* <RenewContractModal contract={contract} /> */}
+                <RenewContractModal contract={contract} />
               </div>
             </CardContent>
           </Card>

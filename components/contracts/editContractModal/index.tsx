@@ -75,7 +75,7 @@ export const EditContractModal = ({ contract } : {contract: Contract}) => {
                       <FormControl>
                         <Select
                           placeholder="Selecione o tipo de contrato."
-                          options={typeOptions}
+                          options={typeOptions.filter(o => o.value !== 'all')}
                           {...field}
                         />
                       </FormControl>
