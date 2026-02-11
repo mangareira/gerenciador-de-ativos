@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { MaintenanceRecord } from "@/types/maintence-props";
 import { Asset} from "@/utils/schemas/assets.schemas";
+import { Contract } from "@/utils/schemas/contracts.schemas";
 import { AssetStatus, ContractStatus, LicenseStatus, TicketPriorityType, TicketStatusType } from "@/utils/schemas/enums.schemas";
 import { License } from "@/utils/schemas/license.schemas";
 import { clsx, type ClassValue } from "clsx"
@@ -199,6 +200,20 @@ export const maintenanceTypeColors: Record<MaintenanceRecord["maintenanceType"],
   cleaning: "bg-red-100 text-red-800 border-red-200"
 }
 
+export const typeLabels: Record<string, string> = {
+  maintenance: "Manutencao",
+  support: "Suporte",
+  lease: "Leasing",
+  warranty: "Garantia",
+}
+
+export const frequencyLabels: Record<string, string> = {
+  monthly: "Mensal",
+  quarterly: "Trimestral",
+  annually: "Anual",
+  one_time: "Pagamento Unico",
+}
+
 
 export function getTicketStatusColor(status: TicketStatusType): string {
   const colors = {
@@ -258,6 +273,46 @@ export function getLicenseDetails(license: License) {
 
   return { utilizationPercent, isExpiring, daysUntilExpiry, renewalDate }
 } 
+
+export function getContractDetails(contract: Contract) {
+  const isExpiring = isExpiringSoon(contract.endDate, 90)
+  const daysUntilEnd = getDaysUntil(contract.endDate)
+  const totalDays = Math.round(
+    (new Date(contract.endDate).getTime() - new Date(contract.startDate).getTime()) / (1000 * 60 * 60 * 24)
+  )
+  const elapsedDays = Math.round(
+    (new Date().getTime() - new Date(contract.startDate).getTime()) / (1000 * 60 * 60 * 24)
+  )
+  const progressPercent = Math.min(100, Math.max(0, (elapsedDays / totalDays) * 100))
+  
+  return {
+    isExpiring,
+    daysUntilEnd,
+    totalDays,
+    elapsedDays,
+    progressPercent
+  }
+}
+
+export function getMonthlyValue(contract: Contract, totalDays: number) {
+  switch (contract.paymentFrequency) {
+    case "monthly": return contract.value
+    case "quarterly": return contract.value / 3
+    case "annually": return contract.value / 12
+    case "one_time": return contract.value / (totalDays / 30)
+    default: return 0
+  }
+}
+
+export function getTotalContractValue(contract: Contract, totalDays: number) {
+  switch (contract.paymentFrequency) {
+    case "monthly": return contract.value * (totalDays / 30)
+    case "quarterly": return contract.value * (totalDays / 90)
+    case "annually": return contract.value * (totalDays / 365)
+    case "one_time": return contract.value
+    default: return 0
+  }
+}
 
 export const parseCurrency = (value: string): number => {
   if (!value) return 0;

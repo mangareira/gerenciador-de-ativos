@@ -10,7 +10,7 @@ export const paymetFrequenceOptions = [
   { value: 'monthly', label: 'Mensal' },
   { value: 'quarterly', label: 'Trimestral' },
   { value: 'annually', label: 'Anual' },
-  { value: 'one_time', label: 'Unico' },
+  { value: 'one_time', label: 'Pagamento Unico' },
 ];
 
 export const statusOptions = [ 

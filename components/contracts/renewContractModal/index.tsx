@@ -21,7 +21,7 @@ export const RenewContractModal = ({ contract } : {contract: Contract}) => {
   const form = useForm({
     resolver: zodResolver(UpdateContractSchema),
     defaultValues: {
-      ...contract,
+      paymentFrequency: undefined,      
       endDate: undefined,
       value: undefined,
       notes: undefined,

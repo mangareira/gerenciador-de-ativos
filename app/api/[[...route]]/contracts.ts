@@ -48,36 +48,65 @@ const app = new Hono()
         return c.json({ error: "Erro ao buscar contratos" }, 404);
       }
     }
-  ).
-  put(
-  "/update/:id",
-  zValidator(
-    "param",
-    z.object({
-      id: z.cuid(),
-    })
-  ),
-  zValidator("json", UpdateContractSchema),
-  async (c) => {
-    try {
-      const { id: id } = c.req.valid("param");
+  )
+  .get(
+    "/get-by-id/:id",
+    zValidator(
+      "param",
+      z.object({ id: z.cuid() })
+    ),
+    async (c) => {
+      try {
+        const { id } = c.req.valid("param");
 
-      const values = c.req.valid("json");
+        const contract = await prisma.contract.findUnique({
+          where: { id },
+          include: { contractAssets: true },
+        });
 
-      await prisma.contract.update({
-        where: { id },
-        data: {
-          ...values,
-          updatedAt: new Date(),
-        },
-      });
+        if (!contract) {
+          return c.json({ error: "Contrato não existe" }, 404);
+        }
 
-      return c.json({ message: "Contrato atualizado com sucesso" }, 200);
-    } catch (error) {
-      console.error("Erro ao atualizar contrato:", error);
-      return c.json({ error: "Erro ao atualizar contrato" }, 400);
+        return c.json({ contract }, 200);
+      } catch (error) {
+        console.error("Erro ao buscar contrato:", error);
+        return c.json({ error: "Contrato não existe" }, 404);
+      }
     }
-  }
-);
+  )
+  .put(
+    "/update/:id",
+    zValidator(
+      "param",
+      z.object({
+        id: z.cuid(),
+      })
+    ),
+    zValidator(
+      "json", 
+      UpdateContractSchema
+    ),
+    async (c) => {
+      try {
+        const { id: id } = c.req.valid("param");
+
+        const values = c.req.valid("json");
+
+        await prisma.contract.update({
+          where: { id },
+          data: {
+            ...values,
+            updatedAt: new Date(),
+          },
+        });
+
+        return c.json({ message: "Contrato atualizado com sucesso" }, 200);
+      } catch (error) {
+        console.error("Erro ao atualizar contrato:", error);
+        return c.json({ error: "Erro ao atualizar contrato" }, 400);
+      }
+    }
+  )
 
 export default app;
