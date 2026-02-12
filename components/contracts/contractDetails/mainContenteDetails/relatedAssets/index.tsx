@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Contract } from "@/utils/schemas/contracts.schemas"
 import { Package } from "lucide-react"
 import Link from "next/link"
+import { ManageContractAssetsModal } from "../../manageContractAssetsModal"
+import { getStatusLabel } from "@/lib/utils"
 
 export const RelatedAssets = ({ contract } : { contract: Contract }) => {
   return (
@@ -13,22 +15,18 @@ export const RelatedAssets = ({ contract } : { contract: Contract }) => {
           <Package className="h-5 w-5" />
           Ativos Relacionados ({contract.contractAssets.length})
         </CardTitle>
-        {/* <ManageContractAssetsModal
+        <ManageContractAssetsModal
           contract={contract}
-          allAssets={allAssets}
-          linkedAssets={relatedAssets}
-        /> */}
+        />
       </CardHeader>
       <CardContent>
         {contract.contractAssets.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
             <Package className="h-12 w-12 mx-auto opacity-20 mb-2" />
             <p className="text-sm">Nenhum ativo vinculado a este contrato</p>
-            {/* <ManageContractAssetsModal
+            <ManageContractAssetsModal
               contract={contract}
-              allAssets={allAssets}
-              linkedAssets={relatedAssets}
-            /> */}
+            />
           </div>
         ) : (
           <div className="space-y-3">
@@ -44,7 +42,7 @@ export const RelatedAssets = ({ contract } : { contract: Contract }) => {
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Badge variant="outline" className="text-xs capitalize">{asset.status}</Badge>
+                  <Badge variant="outline" className="text-xs capitalize">{getStatusLabel(asset.status)}</Badge>
                   <Button variant="ghost" size="sm" asChild>
                     <Link href={`/assets/${asset.id}`}>Ver</Link>
                   </Button>

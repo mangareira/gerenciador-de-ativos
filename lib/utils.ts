@@ -200,6 +200,14 @@ export const maintenanceTypeColors: Record<MaintenanceRecord["maintenanceType"],
   cleaning: "bg-red-100 text-red-800 border-red-200"
 }
 
+export const assetStatusColors: Record<string, string> = {
+  available: "bg-emerald-100 text-emerald-800",
+  in_use: "bg-blue-100 text-blue-800",
+  maintenance: "bg-amber-100 text-amber-800",
+  retired: "bg-gray-100 text-gray-800",
+  lost: "bg-red-100 text-red-800",
+}
+
 export const typeLabels: Record<string, string> = {
   maintenance: "Manutencao",
   support: "Suporte",

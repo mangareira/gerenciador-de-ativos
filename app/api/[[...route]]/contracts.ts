@@ -3,7 +3,7 @@ import { zValidator } from "@hono/zod-validator";
 import z from "zod";
 
 import { prisma } from "@/lib/prisma";
-import { CreateContractSchema, UpdateContractSchema } from "@/utils/schemas/contracts.schemas";
+import { AllocateAssetToContractSchema, CreateContractSchema, UpdateContractSchema } from "@/utils/schemas/contracts.schemas";
 
 const app = new Hono()
   .post(
@@ -105,6 +105,78 @@ const app = new Hono()
       } catch (error) {
         console.error("Erro ao atualizar contrato:", error);
         return c.json({ error: "Erro ao atualizar contrato" }, 400);
+      }
+    }
+  )
+  .put(
+    "/allocate/:id",
+    zValidator(
+      "param",
+      z.object({ 
+        id: z.cuid() 
+      })
+    ),
+    zValidator(
+      "json",
+      AllocateAssetToContractSchema
+    ),
+    async (c) => {
+      try {
+        const { id } = c.req.valid("param");
+        const { assetId, allocateType } = c.req.valid("json");
+
+        const contract = await prisma.contract.findUnique({
+          where: { id },
+          include: { contractAssets: { select: { id: true } } },
+        });
+
+        if (!contract) {
+          return c.json({ error: "Contrato não existe" }, 404);
+        }
+
+        const isAllocated = contract.contractAssets.some((a) => a.id === assetId);
+
+        if (allocateType === "allocate") {
+          if (isAllocated) {
+            return c.json({ error: "Ativo já vinculado" }, 400);
+          }
+
+          await prisma.contract.update({
+            where: { id },
+            data: {
+              contractAssets: {
+                connect: { id: assetId },
+              },
+              updatedAt: new Date(),
+            },
+          });
+
+          return c.json({ message: "Allocação com sucesso" }, 200);
+        }
+
+        // deallocate
+        if (allocateType === "deallocate") {
+          if (!isAllocated) {
+            return c.json({ error: "Ativo não está vinculado a este contrato" }, 400);
+          }
+
+          await prisma.contract.update({
+            where: { id },
+            data: {
+              contractAssets: {
+                disconnect: { id: assetId },
+              },
+              updatedAt: new Date(),
+            },
+          });
+
+          return c.json({ message: "Dealocação com sucesso" }, 200);
+        }
+
+        return c.json({ error: "Tipo de operação inválida" }, 400);
+      } catch (error) {
+        console.error("Erro ao processar alocação/desalocação de ativo:", error);
+        return c.json({ error: "Erro ao processar a solicitação" }, 400);
       }
     }
   )

@@ -18,7 +18,6 @@ export default function ContractsPage() {
 
   const { data: contracts, isLoading } = useGetAllContracts()
 
-  
   const filteredContracts = useMemo(() => {
     if (!contracts) return []
     return contracts.filter((contract) => {

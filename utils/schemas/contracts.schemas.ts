@@ -18,7 +18,7 @@ export const ContractSchema = z.object({
   contactPerson: z.string(),
   contactEmail: z.email(),
   contactPhone: z.string(),
-  contractAssets: AssetSchema.array(),
+  contractAssets: AssetSchema.omit({department: true, movements: true, assignedTo: true }).array(),
   notes: z.string().nullable().optional(),
   createdAt: z.coerce.date<Date>(),
   updatedAt: z.coerce.date<Date>()
@@ -65,3 +65,10 @@ export const UpdateContractSchema = z.object({
 })
 
 export type UpdateContract = z.infer<typeof UpdateContractSchema>
+
+export const AllocateAssetToContractSchema = z.object({
+  assetId: z.cuid(),
+  allocateType: z.enum(["allocate", "deallocate"])
+})
+
+export type AllocateAssetToContract = z.infer<typeof AllocateAssetToContractSchema>

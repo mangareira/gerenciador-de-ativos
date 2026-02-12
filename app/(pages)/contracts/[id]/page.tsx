@@ -1,6 +1,7 @@
 'use client'
 
 import { MainContentDetail } from "@/components/contracts/contractDetails/mainContenteDetails";
+import { ManageContractAssetsModal } from "@/components/contracts/contractDetails/manageContractAssetsModal";
 import { SideBarDetails } from "@/components/contracts/contractDetails/sideBarDetails";
 import { SummaryCardDetails } from "@/components/contracts/contractDetails/summaryCardDetails";
 import { EditContractModal } from "@/components/contracts/editContractModal";
@@ -50,11 +51,9 @@ export default function DetailsContract() {
           </div>
         </div>
         <div className="flex gap-2">
-          {/* <ManageContractAssetsModal
+          <ManageContractAssetsModal
             contract={contract}
-            allAssets={allAssets}
-            linkedAssets={relatedAssets}
-          /> */}
+          />
           <RenewContractModal contract={contract} />
           <EditContractModal contract={contract} />
         </div>
