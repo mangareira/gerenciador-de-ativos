@@ -26,7 +26,7 @@ export const AssetSchema = z.object({
   specifications: z.record(z.string(), z.any()),
   notes: z.string().nullable().optional(),
   lastMaintenanceDate: z.coerce.date<Date>().nullable().optional(),
-  movements: AssetMovementSchema.array(),
+  movements: AssetMovementSchema.array().optional(),
   createdAt: z.coerce.date<Date>(),
   updatedAt: z.coerce.date<Date>(),
 });

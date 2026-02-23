@@ -7,6 +7,7 @@ import ticket from './tickets'
 import comment from './comments'
 import license from './licenses'
 import contract from './contracts'
+import report from './reports'
 
 export const runtime = 'nodejs'
 
@@ -20,6 +21,7 @@ const router = app
   .route('/ticket', ticket)
   .route('/comment', comment)
   .route('/contract', contract)
+  .route('/report', report)
 
 export const GET = handle(router)
 export const POST = handle(router)

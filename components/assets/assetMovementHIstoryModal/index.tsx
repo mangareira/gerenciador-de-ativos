@@ -94,11 +94,11 @@ const AssetMovementHistoryModal = ({ asset, triggerButton }:{
             </h4>
 
             <div className="space-y-4">
-              {asset.movements.map((item, index) => (
+              {asset.movements ? asset.movements.map((item, index) => (
                 <div
                   key={item.id}
                   className={`flex items-start gap-4 border-l-2 ${getColorClass(item.type, index == 0)} pl-4 pb-4 ${
-                    index === asset.movements.length - 1 ? "border-l-transparent" : ""
+                    index === (asset.movements?.length ?? 0) - 1 ? "border-l-transparent" : ""
                   }`}
                 >
                   <div className="mt-1 rounded-full bg-background border p-1.5">{getIcon(item.type)}</div>
@@ -133,25 +133,25 @@ const AssetMovementHistoryModal = ({ asset, triggerButton }:{
                     </div>
                   </div>
                 </div>
-              ))}
+              )) : null}
             </div>
           </div>
 
           {/* Statistics */}
           <div className="grid grid-cols-3 gap-4 pt-4 border-t">
             <div className="text-center">
-              <p className="text-2xl font-bold text-primary">{asset.movements.length}</p>
+              <p className="text-2xl font-bold text-primary">{asset.movements?.length ?? 0}</p>
               <p className="text-xs text-muted-foreground">Total de Eventos</p>
             </div>
             <div className="text-center">
               <p className="text-2xl font-bold text-orange-600">
-                {asset.movements.filter((i) => i.type === "maintenance").length}
+                {asset.movements?.filter((i) => i.type === "maintenance").length ?? 0}
               </p>
               <p className="text-xs text-muted-foreground">Manutenções</p>
             </div>
             <div className="text-center">
               <p className="text-2xl font-bold text-purple-600">
-                {asset.movements.filter((i) => i.type === "transfer").length}
+                {asset.movements?.filter((i) => i.type === "transfer").length ?? 0}
               </p>
               <p className="text-xs text-muted-foreground">Transferências</p>
             </div>
