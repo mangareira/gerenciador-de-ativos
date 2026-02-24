@@ -2,6 +2,7 @@
 import { MaintenanceRecord } from "@/types/maintence-props";
 import { Asset} from "@/utils/schemas/assets.schemas";
 import { Contract } from "@/utils/schemas/contracts.schemas";
+import { Ticket } from "@/utils/schemas/tickets.schemas";
 import { AssetStatus, ContractStatus, LicenseStatus, TicketPriorityType, TicketStatusType } from "@/utils/schemas/enums.schemas";
 import { License } from "@/utils/schemas/license.schemas";
 import { clsx, type ClassValue } from "clsx"
@@ -32,6 +33,20 @@ export function getAssetStatusColor(status: AssetStatus): string {
     lost: "bg-red-100 text-red-800 border-red-200",
   }
   return colors[status]
+}
+
+export function getTypeLabel(type: string): string {
+  const types: Record<string, string> = {
+    desktop: "Desktops",
+    laptop: "Notebooks",
+    server: "Servidores",
+    network: "Rede",
+    mobile: "Móveis",
+    printer: "Impressoras",
+    other: "Outros",
+  }
+
+  return types[type] || type
 }
 
 export function getStatusLabel(status: string): string {
@@ -350,3 +365,54 @@ export const handleSimpleNumberChange = <T>(
   const numericValue = onlyNumbers ? parseInt(onlyNumbers, 10) : 0;
   setValue(fieldName, numericValue);
 };
+
+export function computeDashboardMetrics({
+  assets,
+  licenses,
+  contracts,
+  tickets,
+}: {
+  assets: Asset[];
+  licenses: License[];
+  contracts: Contract[];
+  tickets: Ticket[];
+}) {
+  const totalAssetValue = assets.reduce((s, a) => s + (a.currentValue || 0), 0);
+
+  const totalLicensesAnnual = licenses.reduce((s, l) => s + (l.annualCost || 0), 0);
+
+  let totalContractsValue = 0;
+  let contractsMonthly = 0;
+
+  contracts.forEach((c) => {
+    const totalDays = Math.max(
+      1,
+      Math.round((new Date(c.endDate).getTime() - new Date(c.startDate).getTime()) / (1000 * 60 * 60 * 24))
+    );
+    totalContractsValue += getTotalContractValue(c, totalDays);
+    contractsMonthly += getMonthlyValue(c, totalDays);
+  });
+
+  const totalSpend = totalAssetValue + totalLicensesAnnual + totalContractsValue;
+  const monthlySpend = Math.round((totalLicensesAnnual / 12) + contractsMonthly);
+
+  const contractsExpiringSoon = contracts.filter((c) => isExpiringSoon(c.endDate, 90)).length;
+
+  const resolvedTickets = tickets.filter((t) => t.resolvedAt);
+  const totalResolved = resolvedTickets.length;
+  const totalResolutionHours = resolvedTickets.reduce((s, t) => {
+    const created = typeof t.createdAt === 'string' ? new Date(t.createdAt) : (t.createdAt as unknown as Date);
+    const resolved = typeof t.resolvedAt === 'string' ? new Date(t.resolvedAt) : (t.resolvedAt as unknown as Date);
+    const hours = (resolved.getTime() - created.getTime()) / (1000 * 60 * 60);
+    return s + (isFinite(hours) ? hours : 0);
+  }, 0);
+
+  const averageResolutionTime = totalResolved > 0 ? Math.round(totalResolutionHours / totalResolved) : 0;
+
+  return {
+    totalSpend,
+    monthlySpend,
+    contractsExpiringSoon,
+    averageResolutionTime,
+  };
+}
