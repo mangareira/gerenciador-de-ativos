@@ -416,3 +416,23 @@ export function computeDashboardMetrics({
     averageResolutionTime,
   };
 }
+
+export function getRoleBadgeColor(role: string) {
+  const colors: Record<string, string> = {
+    admin: "bg-red-100 text-red-800 border-red-200",
+    manager: "bg-blue-100 text-blue-800 border-blue-200",
+    technician: "bg-green-100 text-green-800 border-green-200",
+    user: "bg-gray-100 text-gray-800 border-gray-200",
+  }
+  return colors[role] || colors.user
+}
+
+export function getRoleLabel(role: string) {
+  const labels: Record<string, string> = {
+    admin: "Administrador",
+    manager: "Gerente",
+    technician: "Técnico",
+    user: "Usuário",
+  }
+  return labels[role] || role
+}
