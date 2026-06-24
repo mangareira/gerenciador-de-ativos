@@ -8,12 +8,12 @@ export const useGetAllUsers = () => {
     queryFn: async () => {
       const response = await client.api.user['get-all'].$get()
 
-      if(!response.ok) {
+      if (!response.ok) {
         throw new Error('Erro ao encontrar os Usuarios')
       }
 
       return UserSchema.array().parse((await response.json()))
     },
-  }); 
+  });
   return query;
 };

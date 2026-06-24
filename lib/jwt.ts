@@ -5,15 +5,19 @@ const secretKey = new TextEncoder().encode(process.env.SECRET_KEY!)
 const alg = 'HS512'
 
 export async function signAccessToken(payload: UserPayload['sub']) {
-  return new SignJWT({ sub: payload })
+  return new SignJWT({
+    sub: payload as any
+  })
     .setProtectedHeader({ alg })
     .setIssuedAt()
-    .setExpirationTime('1h') // no seu Nest estava 1s; aqui deixei mais realista
+    .setExpirationTime('1h')
     .sign(secretKey)
 }
 
 export async function signRefreshToken(payload: UserPayload['sub']) {
-  return new SignJWT({ sub: payload })
+  return new SignJWT({
+    sub: payload as any
+  })
     .setProtectedHeader({ alg })
     .setIssuedAt()
     .setExpirationTime('7d')

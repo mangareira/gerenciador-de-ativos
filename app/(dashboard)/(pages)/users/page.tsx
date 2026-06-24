@@ -13,23 +13,23 @@ import { useMemo, useState } from "react";
 export default function UsersPage() {
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [typeFilter, setTypeFilter] = useState("all");  
+  const [typeFilter, setTypeFilter] = useState("all");
 
   const { data: users, isLoading } = useGetAllUsers()
 
-  const filteredUsers = useMemo(() => { 
+  const filteredUsers = useMemo(() => {
     if (!users) return [];
-    
+
     return users.filter((user) => {
       const matchesSearch =
         user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.department.toLowerCase().includes(searchTerm.toLowerCase())
+        user.department?.name.toLowerCase().includes(searchTerm.toLowerCase())
 
       const matchesType = typeFilter === "all" || user.role === typeFilter
 
       return matchesSearch && matchesType
-      }
+    }
     )
   }, [users, searchTerm, typeFilter])
 
@@ -46,7 +46,7 @@ export default function UsersPage() {
         </Button>
       </div>
 
-      <SearchTool 
+      <SearchTool
         onSearchChange={setSearchTerm}
         onTypeChange={setTypeFilter}
         typeOptions={typeOptions}
@@ -67,19 +67,19 @@ export default function UsersPage() {
         <SummaryUsersSkeleton />
       ) : (
         <div className="grid gap-4 md:grid-cols-4">
-          <UserSummary 
+          <UserSummary
             title="Total de Usuários"
             count={filteredUsers.length}
           />
-          <UserSummary 
+          <UserSummary
             title="Administradores"
             count={filteredUsers.filter((u) => u.role === "admin").length}
           />
-          <UserSummary 
+          <UserSummary
             title="Técnicos"
             count={filteredUsers.filter((u) => u.role === "technician").length}
           />
-          <UserSummary 
+          <UserSummary
             title="Usuários Ativos"
             count={filteredUsers.filter((u) => u.isActive).length}
           />

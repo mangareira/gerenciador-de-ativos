@@ -14,7 +14,7 @@ import { Loader2, UserMinus, UserPlus, Users } from "lucide-react"
 import { useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 
-export const ManageAllocationsModal = ({ license } : { license: License }) => {
+export const ManageAllocationsModal = ({ license }: { license: License }) => {
   const [open, setOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -35,10 +35,10 @@ export const ManageAllocationsModal = ({ license } : { license: License }) => {
   }))
 
   const filteredAllocatedUsers = useMemo(() => {
-    if(!license.users) return []
+    if (!license.users) return []
 
     return license.users.filter((user) => {
-      const matchesSearch = searchTerm === "" || 
+      const matchesSearch = searchTerm === "" ||
         user.name.toLowerCase().includes(searchTerm.toLowerCase())
 
       return matchesSearch
@@ -55,7 +55,7 @@ export const ManageAllocationsModal = ({ license } : { license: License }) => {
   const handleDeallocate = (data: AllocateUserLicense) => {
     mutate(data)
   }
-  
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -88,30 +88,30 @@ export const ManageAllocationsModal = ({ license } : { license: License }) => {
         </div>
         {availableSeats > 0 && (
           <Form {...form} >
-              <form onSubmit={form.handleSubmit(handleAllocate)} className="flex gap-2">
-                <FormField 
-                  control={form.control}
-                  name="userId"
-                  render={({ field }) => (
-                    <Select 
-                      placeholder="Selecione um usuário para alocar..."
-                      options={usersOptions}
-                      {...field}
-                    />
-                  )}
-                />
-                <Button>
-                  {false ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <>
-                      <UserPlus className="mr-2 h-4 w-4" />
-                      Alocar
-                    </>
-                  )}
-                </Button>
-              </form>
-            </Form>
+            <form onSubmit={form.handleSubmit(handleAllocate)} className="flex gap-2">
+              <FormField
+                control={form.control}
+                name="userId"
+                render={({ field }) => (
+                  <Select
+                    placeholder="Selecione um usuário para alocar..."
+                    options={usersOptions}
+                    {...field}
+                  />
+                )}
+              />
+              <Button>
+                {false ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <>
+                    <UserPlus className="mr-2 h-4 w-4" />
+                    Alocar
+                  </>
+                )}
+              </Button>
+            </form>
+          </Form>
         )}
         {availableSeats === 0 && (
           <div className="rounded-lg bg-yellow-50 border border-yellow-200 p-3 text-sm text-yellow-800">
@@ -119,7 +119,7 @@ export const ManageAllocationsModal = ({ license } : { license: License }) => {
           </div>
         )}
         <div className="relative">
-          <SearchTool 
+          <SearchTool
             titlePlaceholder="Buscar usuários alocados..."
             onSearchChange={setSearchTerm}
           />
@@ -148,7 +148,7 @@ export const ManageAllocationsModal = ({ license } : { license: License }) => {
                       <div className="font-medium text-sm">{user.name}</div>
                       <div className="text-xs text-muted-foreground">{user.email}</div>
                       <div className="text-xs text-muted-foreground">
-                        {user.department}
+                        {user.department?.name}
                       </div>
                     </div>
                   </div>
@@ -156,7 +156,7 @@ export const ManageAllocationsModal = ({ license } : { license: License }) => {
                     variant="ghost"
                     size="sm"
                     className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                    onClick={() => handleDeallocate({ userId: user.id, allocateType: "deallocate"})}
+                    onClick={() => handleDeallocate({ userId: user.id, allocateType: "deallocate" })}
                     disabled={isPending}
                   >
                     {isPending ? (

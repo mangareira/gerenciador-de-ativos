@@ -7,8 +7,8 @@ import { getRoleBadgeColor, getRoleLabel } from "@/lib/utils"
 import { User } from "@/utils/schemas/user.schemas"
 import { Mail, MoreVertical, Shield, User2Icon } from "lucide-react"
 
-export const UsersList = ({ users } : { users: User[] }) => {
-  if(users.length ===  0) {
+export const UsersList = ({ users }: { users: User[] }) => {
+  if (users.length === 0) {
     return (
       <Card>
         <CardContent className="py-12 text-center">
@@ -32,7 +32,7 @@ export const UsersList = ({ users } : { users: User[] }) => {
                 </Avatar>
                 <div>
                   <CardTitle className="text-base">{user.name}</CardTitle>
-                  <CardDescription className="text-sm">{user.department}</CardDescription>
+                  <CardDescription className="text-sm">{user.department?.name}</CardDescription>
                 </div>
               </div>
               <DropdownMenu>

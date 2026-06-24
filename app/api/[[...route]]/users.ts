@@ -26,12 +26,8 @@ const app = new Hono()
           ...values,
           password: hashedPassword
         },
-        select: {
-          name: true,
-          role: true,
-          id: true,
-          password: false,
-          email: true,
+        omit: {
+          password: true,
         }
       });
 
@@ -57,8 +53,8 @@ const app = new Hono()
         where: {
           role,
         },
-        select: {
-          password: false,
+        omit: {
+          password: true
         }
       })
 
@@ -74,8 +70,8 @@ const app = new Hono()
     async (c) => {
 
       const users = await prisma.user.findMany({
-        select: {
-          password: false,
+        omit: {
+          password: true
         }
       })
 
@@ -85,6 +81,35 @@ const app = new Hono()
 
       return c.json(users)
 
+    }
+  )
+  .get(
+    '/get-user-by-id/:id',
+    authMiddleware,
+    requireRoles('admin', "manager", "user", "technician"),
+    zValidator(
+      "param",
+      z.object({
+        id: z.cuid(),
+      })
+    ),
+    async (c) => {
+      const { id } = c.req.valid('param')
+
+      const user = await prisma.user.findUnique({
+        where: {
+          id,
+        },
+        omit: {
+          password: true
+        }
+      })
+
+      if (!user) {
+        return c.json({ error: "Usuario não encontrado!" }, 404)
+      }
+
+      return c.json(user)
     }
   )
 
