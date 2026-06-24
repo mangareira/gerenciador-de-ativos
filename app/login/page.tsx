@@ -26,9 +26,14 @@ export default function LoginPage() {
 
   const onSubmit = (values: Login) => {
     mutate(values, {
-      onSuccess: () => {
+      onSuccess: (user) => {
+        if (user?.role === 'user') {
+          router.push('/tickets')
+          return
+        }
+
         router.push('/')
-      }
+      },
     })
   };
 

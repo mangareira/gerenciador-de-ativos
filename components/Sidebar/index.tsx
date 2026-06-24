@@ -10,7 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Badge } from "../ui/badge";
 import { useGetUser } from "@/utils/hooks/user/useGetUser";
 
-export function Sidebar({ userId }: { userId: string }) {
+export function Sidebar({ userId, userRole }: { userId: string, userRole: string }) {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -35,6 +35,10 @@ export function Sidebar({ userId }: { userId: string }) {
         {navigation.map((item) => {
           const isActive =
             pathname === item.href || (item.href !== '/' && pathname?.startsWith(item.href + '/'));
+
+          if (!item.roles.includes(userRole)) {
+            return null;
+          }
 
           return (
             <Link
