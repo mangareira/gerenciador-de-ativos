@@ -19,6 +19,7 @@ import { Option } from "@/types/options"
 interface CreateTicketProps {
   asset?: Asset
   variant?: "outline" | "default"
+  userId?: string | null
   triggerButton?: ReactNode
   assetsOptions?: Option[]
 }
@@ -27,11 +28,13 @@ const CreateTicketModal = ({
   asset,
   triggerButton,
   variant,
-  assetsOptions
+  assetsOptions,
+  userId
 }: CreateTicketProps) => {
 
   const [open, setOpen] = useState(false)
   const [isLoading, setLoading] = useState(false)
+
 
   const form = useForm<CreateTicket>({
     resolver: zodResolver(CreateTicketSchema),
@@ -41,7 +44,7 @@ const CreateTicketModal = ({
       category: undefined,
       priority: undefined,
       assetId: asset?.id,
-      requesterId: "cmj0cgrhy0000vaoo7zimheo9"
+      requesterId: userId || undefined
     }
   })
 
@@ -99,11 +102,11 @@ const CreateTicketModal = ({
                 <FormItem>
                   <FormLabel>Título do Chamado*</FormLabel>
                   <FormControl>
-                    <Input 
-                      placeholder="Ex: Notebook não liga após atualização" 
+                    <Input
+                      placeholder="Ex: Notebook não liga após atualização"
                       disabled={isLoading}
-                      required 
-                      {...field} 
+                      required
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
