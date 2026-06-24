@@ -1,19 +1,21 @@
 import { Hono } from 'hono'
 import { handle } from 'hono/vercel'
-import  asset from './assets'
-import  user from './users'
-import  departament from './departament'
+import asset from './assets'
+import user from './users'
+import departament from './departament'
 import ticket from './tickets'
 import comment from './comments'
 import license from './licenses'
 import contract from './contracts'
 import report from './reports'
+import auth from './login'
 
 export const runtime = 'nodejs'
 
 const app = new Hono().basePath('/api')
 
 const router = app
+  .route('/auth', auth)
   .route('/asset', asset)
   .route('/user', user)
   .route('/departament', departament)
