@@ -5,8 +5,13 @@ import { formatRelativeTime } from "@/lib/utils"
 import { Ticket } from "@/utils/schemas/tickets.schemas"
 import { Lock, MessageSquare } from "lucide-react"
 import { CreateCommentTicketForm } from "./createCommentTicketForm"
+import { UserRole } from "@/utils/schemas/enums.schemas"
 
-export const CommentsTicketCard = ({ ticket } : { ticket: Ticket }) => {
+export const CommentsTicketCard = ({ ticket, userId, userRole }: { ticket: Ticket; userId: string; userRole: UserRole }) => {
+  const isRequester = userId === ticket.requesterId
+
+  const canViewInternal = !isRequester && ["admin", "manager", "technician"].includes(userRole)
+
   return (
     <Card>
       <CardHeader>
@@ -29,9 +34,8 @@ export const CommentsTicketCard = ({ ticket } : { ticket: Ticket }) => {
             ticket.comments?.map((comment) => (
               <div
                 key={comment.id}
-                className={`flex items-start gap-3 p-3 rounded-lg transition-colors ${
-                  comment.isInternal ? "bg-amber-50 border border-amber-200" : "bg-muted/30"
-                }`}
+                className={`flex items-start gap-3 p-3 rounded-lg transition-colors ${comment.isInternal && !canViewInternal ? "bg-amber-50 border border-amber-200" : "bg-muted/30"
+                  }`}
               >
                 <Avatar className="h-10 w-10 shrink-0">
                   <AvatarImage src={comment.user?.avatar || "/placeholder.svg"} alt={comment.user?.name} />
@@ -39,8 +43,8 @@ export const CommentsTicketCard = ({ ticket } : { ticket: Ticket }) => {
                 </Avatar>
                 <div className="flex-1 space-y-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className={`font-medium text-sm ${comment.isInternal && "text-black"}`}>{comment.user?.name}</span>
-                    {comment.isInternal && (
+                    <span className={`font-medium text-sm ${comment.isInternal && !canViewInternal && "text-black"}`}>{comment.user?.name}</span>
+                    {comment.isInternal && !canViewInternal && (
                       <Badge
                         variant="secondary"
                         className="text-xs bg-amber-100 text-amber-900 flex items-center gap-1"
@@ -53,7 +57,9 @@ export const CommentsTicketCard = ({ ticket } : { ticket: Ticket }) => {
                       {formatRelativeTime(comment.createdAt)}
                     </span>
                   </div>
-                  <p className="text-sm leading-relaxed wrap-break-word">{comment.comment}</p>
+                  {(!comment.isInternal || canViewInternal) ? (
+                    <p className="text-sm leading-relaxed wrap-break-word">{comment.comment}</p>
+                  ) : null}
                 </div>
               </div>
             ))
@@ -62,6 +68,8 @@ export const CommentsTicketCard = ({ ticket } : { ticket: Ticket }) => {
         {ticket.status !== "closed" && (
           <CreateCommentTicketForm
             ticket={ticket}
+            userId={userId}
+            userRole={userRole}
           />
         )}
       </CardContent>

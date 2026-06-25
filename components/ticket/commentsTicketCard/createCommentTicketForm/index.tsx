@@ -4,12 +4,13 @@ import { Form, FormControl, FormField, FormItem } from "@/components/ui/form"
 import { Textarea } from "@/components/ui/textarea"
 import { useCreateComment } from "@/utils/hooks/comments/useCreateComment"
 import { CreateTicketComment, CreateTicketCommentSchema } from "@/utils/schemas/comment.schemas"
+import { UserRole } from "@/utils/schemas/enums.schemas"
 import { Ticket } from "@/utils/schemas/tickets.schemas"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader2, Lock } from "lucide-react"
 import { useForm } from "react-hook-form"
 
-export const CreateCommentTicketForm = ({ ticket } : { ticket : Ticket }) => {
+export const CreateCommentTicketForm = ({ ticket, userId, userRole }: { ticket: Ticket; userId: string; userRole: UserRole }) => {
 
   const form = useForm({
     resolver: zodResolver(CreateTicketCommentSchema),
@@ -17,7 +18,7 @@ export const CreateCommentTicketForm = ({ ticket } : { ticket : Ticket }) => {
       comment: "",
       isInternal: false,
       ticketId: ticket.id,
-      userId: "cmj0cgrhy0000vaoo7zimheo9"
+      userId: userId
     }
   })
 
@@ -30,6 +31,10 @@ export const CreateCommentTicketForm = ({ ticket } : { ticket : Ticket }) => {
       }
     })
   }
+
+  const isRequester = userId === ticket.requesterId
+
+  const canCreateInternal = !isRequester && ["admin", "manager", "technician"].includes(userRole)
 
   return (
     <Form {...form}>
@@ -52,25 +57,27 @@ export const CreateCommentTicketForm = ({ ticket } : { ticket : Ticket }) => {
           )}
         />
         <div className="flex justify-between items-center gap-4">
-          <FormField
-            control={form.control}
-            name="isInternal"
-            render={({ field }) => (
-              <FormItem className="flex items-center gap-2 space-y-0">
-                <FormControl>
-                  <Checkbox
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                    disabled={isPending}
-                  />
-                </FormControl>
-                <label className="text-sm text-muted-foreground flex items-center gap-1 cursor-pointer">
-                  <Lock className="h-3 w-3" />
-                  Comentário interno (não visível ao solicitante)
-                </label>
-              </FormItem>
-            )}
-          />
+          {canCreateInternal && (
+            <FormField
+              control={form.control}
+              name="isInternal"
+              render={({ field }) => (
+                <FormItem className="flex items-center gap-2 space-y-0">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                      disabled={isPending}
+                    />
+                  </FormControl>
+                  <label className="text-sm text-muted-foreground flex items-center gap-1 cursor-pointer">
+                    <Lock className="h-3 w-3" />
+                    Comentário interno (não visível ao solicitante)
+                  </label>
+                </FormItem>
+              )}
+            />
+          )}
           <Button type="submit" size="sm" disabled={isPending}>
             {isPending ? (
               <>
