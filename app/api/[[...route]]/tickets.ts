@@ -107,6 +107,8 @@ const app = new Hono()
   )
   .put(
     "/update/:ticketId",
+    authMiddleware,
+    requireRoles('admin', 'technician'),
     zValidator(
       "param",
       z.object({

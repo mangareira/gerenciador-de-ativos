@@ -4,10 +4,14 @@ import { zValidator } from "@hono/zod-validator";
 
 import { prisma } from "@/lib/prisma";
 import { AllocateUserLicenseSchema, CreateLicenseSchema, LicenseSchema, UpdateLicenseSchema } from "@/utils/schemas/license.schemas";
+import { authMiddleware } from "./middeware/middleware";
+import { requireRoles } from "./middeware/roles";
 
 const app = new Hono()
   .post(
     "/create",
+    authMiddleware,
+    requireRoles('admin', "technician", "manager"),
     zValidator(
       "json",
       CreateLicenseSchema
@@ -22,7 +26,7 @@ const app = new Hono()
           }
         })
 
-        if(!license) {
+        if (!license) {
           return c.json({ error: "Erro ao criar licença" }, 400)
         }
 
@@ -36,6 +40,8 @@ const app = new Hono()
   )
   .get(
     "/get-all",
+    authMiddleware,
+    requireRoles('admin', "technician", "manager"),
     async (c) => {
       try {
         const licenses = await prisma.license.findMany({
@@ -47,13 +53,15 @@ const app = new Hono()
         })
 
         return c.json({ licenses }, 200)
-      } catch  {
+      } catch {
         return c.json({ error: "Erro ao buscar licenças" }, 404)
       }
     }
   )
   .get(
     "/get-by-id/:id",
+    authMiddleware,
+    requireRoles('admin', "technician", "manager"),
     zValidator(
       "param",
       z.object({ id: z.cuid() })
@@ -68,13 +76,15 @@ const app = new Hono()
         })
 
         return c.json({ license }, 200)
-      } catch  {
+      } catch {
         return c.json({ error: "Licença não existe" }, 404)
       }
     }
   )
   .put(
     "/allocate/:licenseId",
+    authMiddleware,
+    requireRoles('admin', "technician"),
     zValidator(
       "param",
       z.object({
@@ -89,7 +99,7 @@ const app = new Hono()
       try {
         const data = c.req.valid("json")
         const { licenseId } = c.req.valid("param")
-        
+
         const license = await prisma.license.findUnique({
           where: {
             id: licenseId
@@ -108,7 +118,7 @@ const app = new Hono()
         }
 
         const isUserAlreadyAllocated = license.users.some(user => user.id === data.userId)
-        
+
         if (data.allocateType === "allocate") {
           if (isUserAlreadyAllocated) {
             return c.json({ error: "Usuário já está com esta licença" }, 400)
@@ -133,7 +143,7 @@ const app = new Hono()
           await prisma.license.update({
             where: {
               id: licenseId
-            }, 
+            },
             data: {
               users: {
                 connect: {
@@ -144,8 +154,8 @@ const app = new Hono()
           })
 
           return c.json({ message: "Usuário alocado com sucesso" }, 200)
-        } 
-        
+        }
+
         // Deallocate
         else if (data.allocateType === "deallocate") {
           if (!isUserAlreadyAllocated) {
@@ -177,6 +187,8 @@ const app = new Hono()
   )
   .put(
     "/update/:id",
+    authMiddleware,
+    requireRoles('admin', "technician"),
     zValidator(
       "param",
       LicenseSchema.pick({
@@ -191,18 +203,18 @@ const app = new Hono()
       try {
         const values = c.req.valid("json")
         const { id } = c.req.valid("param")
-  
+
         await prisma.license.update({
           where: {
             id,
           },
           data: values
         })
-  
-        return c.json({ message: "Licença atualizada com sucesso" }, 200)  
+
+        return c.json({ message: "Licença atualizada com sucesso" }, 200)
       } catch (error) {
         console.error(error);
-        return c.json({error: "Erro ao atualizar a licença"}, 400)
+        return c.json({ error: "Erro ao atualizar a licença" }, 400)
       }
     }
   )

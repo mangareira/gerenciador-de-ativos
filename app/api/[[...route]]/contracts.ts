@@ -4,12 +4,16 @@ import z from "zod";
 
 import { prisma } from "@/lib/prisma";
 import { AllocateAssetToContractSchema, CreateContractSchema, UpdateContractSchema } from "@/utils/schemas/contracts.schemas";
+import { authMiddleware } from "./middeware/middleware";
+import { requireRoles } from "./middeware/roles";
 
 const app = new Hono()
   .post(
     "/create",
+    authMiddleware,
+    requireRoles('admin', 'technician'),
     zValidator(
-      "json", 
+      "json",
       CreateContractSchema
     ),
     async (c) => {
@@ -33,6 +37,8 @@ const app = new Hono()
   )
   .get(
     "/get-all",
+    authMiddleware,
+    requireRoles('admin', 'manager', 'technician'),
     async (c) => {
       try {
         const contracts = await prisma.contract.findMany({
@@ -51,6 +57,8 @@ const app = new Hono()
   )
   .get(
     "/get-by-id/:id",
+    authMiddleware,
+    requireRoles('admin', 'manager', 'technician'),
     zValidator(
       "param",
       z.object({ id: z.cuid() })
@@ -77,6 +85,8 @@ const app = new Hono()
   )
   .put(
     "/update/:id",
+    authMiddleware,
+    requireRoles('admin', 'technician'),
     zValidator(
       "param",
       z.object({
@@ -84,7 +94,7 @@ const app = new Hono()
       })
     ),
     zValidator(
-      "json", 
+      "json",
       UpdateContractSchema
     ),
     async (c) => {
@@ -110,10 +120,12 @@ const app = new Hono()
   )
   .put(
     "/allocate/:id",
+    authMiddleware,
+    requireRoles('admin', 'technician'),
     zValidator(
       "param",
-      z.object({ 
-        id: z.cuid() 
+      z.object({
+        id: z.cuid()
       })
     ),
     zValidator(

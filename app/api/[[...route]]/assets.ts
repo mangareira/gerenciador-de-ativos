@@ -5,33 +5,41 @@ import { z } from "zod";
 import { CreateAssetSchema, UpdateAssetSchema } from "@/utils/schemas/assets.schemas";
 import { CreateAssetMovementSchema } from "@/utils/schemas/assetsMovementHistory.schemas";
 import { createMaintenanceSchema } from "@/utils/schemas/maintenance.schemas";
+import { authMiddleware } from "./middeware/middleware";
+import { requireRoles } from "./middeware/roles";
 
 const app = new Hono()
-  .get('/get-assets', async (c) => {
-    try {
-      const assets = await prisma.asset.findMany({
-        include: {
-          department: true,
-          assignedTo: true,
-          movements: true
-        },
-        orderBy: {
-          createdAt: 'desc',
-        },
-      });
+  .get(
+    '/get-assets',
+    authMiddleware,
+    requireRoles('admin', 'manager', 'technician', 'user'),
+    async (c) => {
+      try {
+        const assets = await prisma.asset.findMany({
+          include: {
+            department: true,
+            assignedTo: true,
+            movements: true
+          },
+          orderBy: {
+            createdAt: 'desc',
+          },
+        });
 
-      return c.json({ assets });
-    } catch {
-      return c.json({ error: "Erro ao buscar ativos" }, 500);
-    }
-  })
+        return c.json({ assets });
+      } catch {
+        return c.json({ error: "Erro ao buscar ativos" }, 500);
+      }
+    })
   .get(
     '/get-assets/:id',
-    zValidator("param", 
+    authMiddleware,
+    requireRoles('admin', 'manager', 'technician', 'user'),
+    zValidator("param",
       z.object({
         id: z.string(),
       }),
-    ) ,
+    ),
     async (c) => {
       const id = c.req.param("id");
 
@@ -50,20 +58,25 @@ const app = new Hono()
         },
       });
 
-      if(!asset) {
+      if (!asset) {
         return c.json({ error: "Ativo nao encontrado" }, 404);
       }
 
-      return c.json({ asset: {
-        ...asset,
-        specifications: asset.specifications || {},
-      } });
+      return c.json({
+        asset: {
+          ...asset,
+          specifications: asset.specifications || {},
+        }
+      });
     }
   )
-  .post('/create',
-    zValidator("json", 
+  .post(
+    '/create',
+    authMiddleware,
+    requireRoles('admin', 'technician'),
+    zValidator("json",
       CreateAssetSchema,
-    ) , 
+    ),
     async (c) => {
       const values = c.req.valid("json");
 
@@ -71,15 +84,17 @@ const app = new Hono()
         data: values,
       });
 
-      if(!asset) {
+      if (!asset) {
         return c.json({ error: "Ativo nao criado" }, 400);
       }
 
       return c.json({ asset }, 201);
     }
-   )
+  )
   .get(
     '/movement-history/:assetId',
+    authMiddleware,
+    requireRoles('admin', 'manager', 'technician', 'user'),
     zValidator(
       "param",
       z.object({
@@ -101,13 +116,15 @@ const app = new Hono()
         }
       })
 
-      if(!movement) return c.json({ error: "Historico nao encontrado" }, 404);
+      if (!movement) return c.json({ error: "Historico nao encontrado" }, 404);
 
       return c.json({ movement })
     }
-   )
+  )
   .post(
     '/movement-history',
+    authMiddleware,
+    requireRoles('admin', 'manager', 'technician'),
     zValidator(
       "json",
       CreateAssetMovementSchema,
@@ -119,7 +136,7 @@ const app = new Hono()
         data: values
       })
 
-      if(!movement) return c.json({ error: "Movimento não criado" }, 400)
+      if (!movement) return c.json({ error: "Movimento não criado" }, 400)
 
       return c.json({ movement }, 201)
     }
@@ -140,9 +157,9 @@ const app = new Hono()
       const values = c.req.valid('json')
       const { id } = c.req.valid('param')
 
-      if(!id) {
-        return c.json({error: "Id é obrigatorio"}, 404)
-      } 
+      if (!id) {
+        return c.json({ error: "Id é obrigatorio" }, 404)
+      }
 
       const update = await prisma.asset.update({
         where: {
@@ -156,8 +173,8 @@ const app = new Hono()
         }
       })
 
-      if(!update) {
-        return c.json({error: "Erro ao atualizar Ativo"}, 400)
+      if (!update) {
+        return c.json({ error: "Erro ao atualizar Ativo" }, 400)
       }
 
       return c.json({ update })
@@ -165,6 +182,8 @@ const app = new Hono()
   )
   .post(
     '/maintenance',
+    authMiddleware,
+    requireRoles('admin', 'manager', 'technician'),
     zValidator(
       'json',
       createMaintenanceSchema,
@@ -187,7 +206,7 @@ const app = new Hono()
         })
       ])
 
-      if(!maintenance) { 
+      if (!maintenance) {
         return c.json({ error: "Erro ao criar a manutenção" }, 400)
       }
 
@@ -196,6 +215,8 @@ const app = new Hono()
   )
   .get(
     '/maintenance/:assetId',
+    authMiddleware,
+    requireRoles('admin', 'manager', 'technician'),
     zValidator(
       'param',
       z.object({
@@ -204,7 +225,7 @@ const app = new Hono()
     ),
     async (c) => {
       const { assetId } = c.req.valid('param')
-   
+
       const maintenance = await prisma.maintenance.findMany({
         where: {
           assetId,
@@ -217,7 +238,7 @@ const app = new Hono()
         }
       })
 
-      if(!maintenance) {
+      if (!maintenance) {
         return c.json({ error: "Erro ao encontrar as manuteções" }, 404)
       }
 

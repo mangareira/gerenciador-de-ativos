@@ -40,6 +40,8 @@ const app = new Hono()
   )
   .get(
     '/get-user-by-role/:role',
+    authMiddleware,
+    requireRoles('admin', 'technician', "manager", "user"),
     zValidator(
       "param",
       z.object({
@@ -67,6 +69,8 @@ const app = new Hono()
   )
   .get(
     '/get-all',
+    authMiddleware,
+    requireRoles('admin', 'technician', "manager"),
     async (c) => {
 
       const users = await prisma.user.findMany({
