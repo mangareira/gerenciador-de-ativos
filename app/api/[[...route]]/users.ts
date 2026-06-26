@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { UserRoleSchema } from "@/utils/schemas/enums.schemas";
-import { CreateUserSchema } from "@/utils/schemas/user.schemas";
+import { CreateUserSchema, UpdateUserSchema } from "@/utils/schemas/user.schemas";
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import z from "zod";
@@ -76,6 +76,9 @@ const app = new Hono()
       const users = await prisma.user.findMany({
         omit: {
           password: true
+        },
+        include: {
+          department: true
         }
       })
 
@@ -114,6 +117,39 @@ const app = new Hono()
       }
 
       return c.json(user)
+    }
+  )
+  .put(
+    '/update/:id',
+    authMiddleware,
+    requireRoles('admin'),
+    zValidator(
+      'param',
+      z.object({
+        id: z.cuid(),
+      })
+    ),
+    zValidator('json', UpdateUserSchema),
+    async (c) => {
+      const { id } = c.req.valid('param')
+      const values = c.req.valid('json')
+
+      try {
+        const user = await prisma.user.update({
+          where: { id },
+          data: {
+            ...values,
+            departmentId: values.departmentId ?? null,
+          },
+          omit: {
+            password: true,
+          },
+        })
+
+        return c.json({ user })
+      } catch {
+        return c.json({ error: 'Usuário não encontrado!' }, 404)
+      }
     }
   )
 

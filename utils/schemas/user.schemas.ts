@@ -11,7 +11,8 @@ export const UserSchema = z.object({
   name: z.string().min(1, "Nome é obrigatório"),
   email: z.email("Email inválido"),
   role: UserRoleSchema,
-  department: DepartmentSchema.optional(),
+  department: DepartmentSchema.optional().nullable(),
+  departmentId: z.cuid().nullable().optional(),
   avatar: z.url("URL do avatar inválida").nullable().optional(),
   isActive: z.boolean().default(true),
   createdAt: z.coerce.date<Date | string>(),
@@ -35,7 +36,7 @@ export const UpdateUserSchema = z.object({
   email: z.email("Email inválido").optional(),
   password: z.string().min(6, "Senha deve ter no mínimo 6 caracteres").optional(),
   role: UserRoleSchema.optional(),
-  department: DepartmentSchema.optional(),
+  departmentId: z.cuid().nullable().optional(),
   avatar: z.url("URL do avatar inválida").nullable().optional(),
   isActive: z.boolean().optional(),
 });

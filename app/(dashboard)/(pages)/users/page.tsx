@@ -9,6 +9,8 @@ import { typeOptions } from "@/utils/constants/users-options-search";
 import { useGetAllUsers } from "@/utils/hooks/user/useGetAllUsers";
 import { UserPlus } from "lucide-react";
 import { useMemo, useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useGetDepartments } from "@/utils/hooks/department/useGetDepartments";
 
 export default function UsersPage() {
 
@@ -16,6 +18,8 @@ export default function UsersPage() {
   const [typeFilter, setTypeFilter] = useState("all");
 
   const { data: users, isLoading } = useGetAllUsers()
+  const { data: departments } = useGetDepartments()
+
 
   const filteredUsers = useMemo(() => {
     if (!users) return [];
@@ -29,62 +33,76 @@ export default function UsersPage() {
       const matchesType = typeFilter === "all" || user.role === typeFilter
 
       return matchesSearch && matchesType
-    }
-    )
+    })
   }, [users, searchTerm, typeFilter])
+
+  const departmentOptions = (departments ?? []).map((department) => ({
+    label: department.name,
+    value: department.id,
+  }));
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Usuários</h1>
-          <p className="text-muted-foreground">Gerencie usuários e permissões do sistema</p>
+          <p className="text-muted-foreground">Gerencie usuários, departamentos e permissões</p>
         </div>
-        <Button>
-          <UserPlus className="mr-2 h-4 w-4" />
-          Novo Usuário
-        </Button>
       </div>
 
-      <SearchTool
-        onSearchChange={setSearchTerm}
-        onTypeChange={setTypeFilter}
-        typeOptions={typeOptions}
-        titlePlaceholder="Buscar por nome, email ou departamento..."
-      />
+      <Tabs defaultValue="users" className="space-y-6">
+        <TabsList>
+          <TabsTrigger value="users">Usuários</TabsTrigger>
+          <TabsTrigger value="departments">Departamentos</TabsTrigger>
+        </TabsList>
+        <TabsContent value="users" className="space-y-6">
+          <div className="flex justify-end">
+            <Button>
+              <UserPlus className="mr-2 h-4 w-4" />
+              Novo Usuário
+            </Button>
+          </div>
+          <SearchTool
+            onSearchChange={setSearchTerm}
+            onTypeChange={setTypeFilter}
+            typeOptions={typeOptions}
+            titlePlaceholder="Buscar por nome, email ou departamento..."
+          />
 
-      {isLoading && !users ? (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          <UsersSkeleton />
-          <UsersSkeleton />
-          <UsersSkeleton />
-        </div>
-      ) : (
-        <UsersList users={filteredUsers} />
-      )}
+          {isLoading && !users ? (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              <UsersSkeleton />
+              <UsersSkeleton />
+              <UsersSkeleton />
+            </div>
+          ) : (
+            <UsersList users={filteredUsers} departmentOptions={departmentOptions} />
+          )}
 
-      {isLoading && !users ? (
-        <SummaryUsersSkeleton />
-      ) : (
-        <div className="grid gap-4 md:grid-cols-4">
-          <UserSummary
-            title="Total de Usuários"
-            count={filteredUsers.length}
-          />
-          <UserSummary
-            title="Administradores"
-            count={filteredUsers.filter((u) => u.role === "admin").length}
-          />
-          <UserSummary
-            title="Técnicos"
-            count={filteredUsers.filter((u) => u.role === "technician").length}
-          />
-          <UserSummary
-            title="Usuários Ativos"
-            count={filteredUsers.filter((u) => u.isActive).length}
-          />
-        </div>
-      )}
+          {isLoading && !users ? (
+            <SummaryUsersSkeleton />
+          ) : (
+            <div className="grid gap-4 md:grid-cols-4">
+              <UserSummary
+                title="Total de Usuários"
+                count={filteredUsers.length}
+              />
+              <UserSummary
+                title="Administradores"
+                count={filteredUsers.filter((u) => u.role === "admin").length}
+              />
+              <UserSummary
+                title="Técnicos"
+                count={filteredUsers.filter((u) => u.role === "technician").length}
+              />
+              <UserSummary
+                title="Usuários Ativos"
+                count={filteredUsers.filter((u) => u.isActive).length}
+              />
+            </div>
+          )}
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }

@@ -6,8 +6,10 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { getRoleBadgeColor, getRoleLabel } from "@/lib/utils"
 import { User } from "@/utils/schemas/user.schemas"
 import { Mail, MoreVertical, Shield, User2Icon } from "lucide-react"
+import { EditUserModal } from "../editUserModal"
+import { Option } from "@/types/options"
 
-export const UsersList = ({ users }: { users: User[] }) => {
+export const UsersList = ({ users, departmentOptions }: { users: User[], departmentOptions: Option[] }) => {
   if (users.length === 0) {
     return (
       <Card>
@@ -44,11 +46,17 @@ export const UsersList = ({ users }: { users: User[] }) => {
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>Ações</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>Editar</DropdownMenuItem>
+                  <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                    <EditUserModal
+                      user={user}
+                      departmentOptions={departmentOptions}
+                      triggerButton={<span className="w-full">Editar</span>}
+                    />
+                  </DropdownMenuItem>
                   <DropdownMenuItem>Alterar Permissões</DropdownMenuItem>
-                  <DropdownMenuItem>Ver Histórico</DropdownMenuItem>
+                  {/* <DropdownMenuItem>Ver Histórico</DropdownMenuItem> */}
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem className="text-destructive">Desativar Usuário</DropdownMenuItem>
+                  <DropdownMenuItem className="text-destructive">Excluir</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
