@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { MaintenanceRecord } from "@/types/maintence-props";
-import { Asset} from "@/utils/schemas/assets.schemas";
+import { Asset } from "@/utils/schemas/assets.schemas";
 import { Contract } from "@/utils/schemas/contracts.schemas";
 import { Ticket } from "@/utils/schemas/tickets.schemas";
-import { AssetStatus, ContractStatus, LicenseStatus, TicketPriorityType, TicketStatusType } from "@/utils/schemas/enums.schemas";
+import { AssetStatus, ContractStatus, LicenseStatus, TicketPriorityType, TicketStatusType, UserRole } from "@/utils/schemas/enums.schemas";
 import { License } from "@/utils/schemas/license.schemas";
 import { clsx, type ClassValue } from "clsx"
 import { subMonths } from "date-fns";
@@ -295,7 +295,7 @@ export function getLicenseDetails(license: License) {
   const renewalDate = license.expiryDate ? computeRenewalDate(license.expiryDate) : null
 
   return { utilizationPercent, isExpiring, daysUntilExpiry, renewalDate }
-} 
+}
 
 export function getContractDetails(contract: Contract) {
   const isExpiring = isExpiringSoon(contract.endDate, 90)
@@ -307,7 +307,7 @@ export function getContractDetails(contract: Contract) {
     (new Date().getTime() - new Date(contract.startDate).getTime()) / (1000 * 60 * 60 * 24)
   )
   const progressPercent = Math.min(100, Math.max(0, (elapsedDays / totalDays) * 100))
-  
+
   return {
     isExpiring,
     daysUntilEnd,
@@ -339,11 +339,11 @@ export function getTotalContractValue(contract: Contract, totalDays: number) {
 
 export const parseCurrency = (value: string): number => {
   if (!value) return 0;
-  
+
   const onlyNumbers = value.replace(/[^\d]/g, '');
-  
+
   if (!onlyNumbers) return 0;
-  
+
   return parseFloat(onlyNumbers) / 100;
 };
 
@@ -436,3 +436,10 @@ export function getRoleLabel(role: string) {
   }
   return labels[role] || role
 }
+
+export const ROLE_OPTIONS: { value: UserRole; label: string; description: string }[] = [
+  { value: "admin", label: "Administrador", description: "Acesso total ao sistema e configurações" },
+  { value: "manager", label: "Gerente", description: "Gerencia ativos, contratos e equipes" },
+  { value: "technician", label: "Técnico", description: "Atende chamados e realiza manutenções" },
+  { value: "user", label: "Usuário", description: "Acesso básico e abertura de chamados" },
+]

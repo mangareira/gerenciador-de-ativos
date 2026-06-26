@@ -8,6 +8,7 @@ import { User } from "@/utils/schemas/user.schemas"
 import { Mail, MoreVertical, Shield, User2Icon } from "lucide-react"
 import { EditUserModal } from "../editUserModal"
 import { Option } from "@/types/options"
+import { ChangePermissionUserModal } from "../changePermissionUserModal"
 
 export const UsersList = ({ users, departmentOptions }: { users: User[], departmentOptions: Option[] }) => {
   if (users.length === 0) {
@@ -53,7 +54,12 @@ export const UsersList = ({ users, departmentOptions }: { users: User[], departm
                       triggerButton={<span className="w-full">Editar</span>}
                     />
                   </DropdownMenuItem>
-                  <DropdownMenuItem>Alterar Permissões</DropdownMenuItem>
+                  <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                    <ChangePermissionUserModal
+                      user={user}
+                      triggerButton={<span className="w-full">Alterar Permissões</span>}
+                    />
+                  </DropdownMenuItem>
                   {/* <DropdownMenuItem>Ver Histórico</DropdownMenuItem> */}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem className="text-destructive">Excluir</DropdownMenuItem>
