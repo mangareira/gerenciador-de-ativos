@@ -24,6 +24,17 @@ const app = new Hono()
         return c.json({ error: "Departamento nao criado" }, 500);
       }
 
+      try {
+        await prisma.user.update({
+          where: { id: values.managerId },
+          data: {
+            departmentId: department.id,
+          },
+        });
+      } catch {
+        return c.json({ error: "Gerente não encontrado" }, 404);
+      }
+
       return c.json({ department });
     }
   )
