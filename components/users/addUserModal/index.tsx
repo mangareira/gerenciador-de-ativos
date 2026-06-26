@@ -35,6 +35,7 @@ export const AddUserModal = ({ departmentOptions }: { departmentOptions: Option[
     mutate(data, {
       onSuccess: () => {
         setOpen(false)
+        form.reset()
       }
     })
   }

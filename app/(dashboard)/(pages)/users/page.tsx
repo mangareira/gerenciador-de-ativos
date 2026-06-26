@@ -1,13 +1,11 @@
 'use client'
 import SearchTool from "@/components/search";
-import { Button } from "@/components/ui/button";
 import { UserSummary } from "@/components/users/summary";
 import { UsersList } from "@/components/users/usersList";
 import UsersSkeleton from "@/components/users/usersSkeleton";
 import SummaryUsersSkeleton from "@/components/users/summary/summarySkeleton";
 import { typeOptions } from "@/utils/constants/users-options-search";
 import { useGetAllUsers } from "@/utils/hooks/user/useGetAllUsers";
-import { UserPlus } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useGetDepartments } from "@/utils/hooks/department/useGetDepartments";
@@ -99,6 +97,11 @@ export default function UsersPage() {
               />
             </div>
           )}
+        </TabsContent>
+        <TabsContent value="departments" className="space-y-6">
+          <p>
+            Em construção... Em breve você poderá gerenciar os departamentos da sua empresa, incluindo a criação, edição e exclusão de departamentos, bem como a atribuição de usuários a cada departamento.
+          </p>
         </TabsContent>
       </Tabs>
     </div>

@@ -30,34 +30,16 @@ export function Header() {
             <Button variant="ghost" size="icon" className="relative">
               <Bell className="h-5 w-5" />
               <Badge variant="destructive" className="absolute -right-1 -top-1 h-5 w-5 rounded-full p-0 text-xs">
-                3
+                0
               </Badge>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-80">
             <DropdownMenuLabel>Notificações</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="flex flex-col items-start gap-1 p-3">
-              <div className="flex w-full items-center justify-between">
-                <span className="text-sm font-medium">Licença Microsoft 365 expirando</span>
-                <span className="text-xs text-muted-foreground">2h atrás</span>
-              </div>
-              <p className="text-xs text-muted-foreground">A licença expira em 30 dias. Renovação necessária.</p>
-            </DropdownMenuItem>
-            <DropdownMenuItem className="flex flex-col items-start gap-1 p-3">
-              <div className="flex w-full items-center justify-between">
-                <span className="text-sm font-medium">Novo chamado crítico</span>
-                <span className="text-xs text-muted-foreground">4h atrás</span>
-              </div>
-              <p className="text-xs text-muted-foreground">Servidor de aplicações sem resposta</p>
-            </DropdownMenuItem>
-            <DropdownMenuItem className="flex flex-col items-start gap-1 p-3">
-              <div className="flex w-full items-center justify-between">
-                <span className="text-sm font-medium">Contrato Dell para renovação</span>
-                <span className="text-xs text-muted-foreground">1d atrás</span>
-              </div>
-              <p className="text-xs text-muted-foreground">Contrato vence em 60 dias</p>
-            </DropdownMenuItem>
+            <p>
+              Em breve você poderá receber notificações sobre eventos importantes, como a expiração de licenças, vencimento de garantias e atualizações de tickets. Fique atento para não perder nenhuma informação relevante!
+            </p>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
