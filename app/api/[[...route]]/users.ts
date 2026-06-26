@@ -152,6 +152,84 @@ const app = new Hono()
       }
     }
   )
+  .delete(
+    '/delete/:id',
+    authMiddleware,
+    requireRoles('admin'),
+    zValidator(
+      'param',
+      z.object({
+        id: z.cuid(),
+      })
+    ),
+    async (c) => {
+      const { id } = c.req.valid('param')
+
+      const user = await prisma.user.findUnique({
+        where: { id },
+        include: {
+          department: true,
+        },
+      })
+
+      if (!user) {
+        return c.json({ error: 'Usuário não encontrado!' }, 404)
+      }
+
+      if (user.departmentId) {
+        const departmentManager = await prisma.user.findFirst({
+          where: {
+            departmentId: user.departmentId,
+            id: { not: id },
+          },
+          orderBy: {
+            createdAt: 'asc',
+          },
+        })
+
+        if (departmentManager) {
+          await prisma.department.update({
+            where: { id: user.departmentId },
+            data: {
+              managerId: departmentManager.id,
+            },
+          })
+        } else {
+          await prisma.department.update({
+            where: { id: user.departmentId },
+            data: {
+              managerId: user.id,
+            },
+          })
+        }
+      }
+
+      await prisma.ticket.deleteMany({
+        where: {
+          OR: [
+            { requesterId: id },
+            { assignedToId: id },
+          ],
+        },
+      })
+
+      await prisma.user.updateMany({
+        where: {
+          departmentId: user.departmentId,
+          id: { not: id },
+        },
+        data: {
+          departmentId: null,
+        },
+      })
+
+      await prisma.user.delete({
+        where: { id },
+      })
+
+      return c.json({ success: true })
+    }
+  )
 
 export default app
 

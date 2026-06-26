@@ -9,8 +9,25 @@ import { Mail, MoreVertical, Shield, User2Icon } from "lucide-react"
 import { EditUserModal } from "../editUserModal"
 import { Option } from "@/types/options"
 import { ChangePermissionUserModal } from "../changePermissionUserModal"
+import { useConfirm } from "@/utils/hooks/useConfirm"
+import { useDeleteUser } from "@/utils/hooks/user/useDeleteUser"
 
 export const UsersList = ({ users, departmentOptions }: { users: User[], departmentOptions: Option[] }) => {
+  const [ConfirmationDialog, confirm] = useConfirm(
+    'Excluir usuário?',
+    'Esta ação não pode ser desfeita. O usuário será removido permanentemente do sistema.'
+  );
+
+  const { mutate: deleteUser } = useDeleteUser()
+
+  const onDelete = async (userId: string) => {
+    const ok = await confirm();
+
+    if (ok) {
+      deleteUser(userId)
+    }
+  };
+
   if (users.length === 0) {
     return (
       <Card>
@@ -23,73 +40,81 @@ export const UsersList = ({ users, departmentOptions }: { users: User[], departm
   }
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {users.map((user) => (
-        <Card key={user.id}>
-          <CardHeader>
-            <div className="flex items-start justify-between">
-              <div className="flex items-center gap-3">
-                <Avatar className="h-12 w-12">
-                  <AvatarImage src={user.avatar || "/placeholder.svg"} alt={user.name} />
-                  <AvatarFallback>{user.name.slice(0, 2).toUpperCase()}</AvatarFallback>
-                </Avatar>
-                <div>
-                  <CardTitle className="text-base">{user.name}</CardTitle>
-                  <CardDescription className="text-sm">{user.department?.name}</CardDescription>
+    <>
+      <ConfirmationDialog />
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {users.map((user) => (
+          <Card key={user.id}>
+            <CardHeader>
+              <div className="flex items-start justify-between">
+                <div className="flex items-center gap-3">
+                  <Avatar className="h-12 w-12">
+                    <AvatarImage src={user.avatar || "/placeholder.svg"} alt={user.name} />
+                    <AvatarFallback>{user.name.slice(0, 2).toUpperCase()}</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <CardTitle className="text-base">{user.name}</CardTitle>
+                    <CardDescription className="text-sm">{user.department?.name}</CardDescription>
+                  </div>
                 </div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-8 w-8">
+                      <MoreVertical className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>Ações</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                      <EditUserModal
+                        user={user}
+                        departmentOptions={departmentOptions}
+                        triggerButton={<span className="w-full">Editar</span>}
+                      />
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                      <ChangePermissionUserModal
+                        user={user}
+                        triggerButton={<span className="w-full">Alterar Permissões</span>}
+                      />
+                    </DropdownMenuItem>
+                    {/* <DropdownMenuItem>Ver Histórico</DropdownMenuItem> */}
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      className="text-destructive"
+                      onClick={() => onDelete(user.id)}
+                    >
+                      Excluir
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
-                    <MoreVertical className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>Ações</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                    <EditUserModal
-                      user={user}
-                      departmentOptions={departmentOptions}
-                      triggerButton={<span className="w-full">Editar</span>}
-                    />
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                    <ChangePermissionUserModal
-                      user={user}
-                      triggerButton={<span className="w-full">Alterar Permissões</span>}
-                    />
-                  </DropdownMenuItem>
-                  {/* <DropdownMenuItem>Ver Histórico</DropdownMenuItem> */}
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem className="text-destructive">Excluir</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Mail className="h-4 w-4" />
-              <span className="truncate">{user.email}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Shield className="h-4 w-4 text-muted-foreground" />
-              <Badge variant="outline" className={getRoleBadgeColor(user.role)}>
-                {getRoleLabel(user.role)}
-              </Badge>
-              {user.isActive ? (
-                <Badge variant="outline" className="bg-green-100 text-green-800 border-green-200">
-                  Ativo
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Mail className="h-4 w-4" />
+                <span className="truncate">{user.email}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Shield className="h-4 w-4 text-muted-foreground" />
+                <Badge variant="outline" className={getRoleBadgeColor(user.role)}>
+                  {getRoleLabel(user.role)}
                 </Badge>
-              ) : (
-                <Badge variant="outline" className="bg-gray-100 text-gray-800 border-gray-200">
-                  Inativo
-                </Badge>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
+                {user.isActive ? (
+                  <Badge variant="outline" className="bg-green-100 text-green-800 border-green-200">
+                    Ativo
+                  </Badge>
+                ) : (
+                  <Badge variant="outline" className="bg-gray-100 text-gray-800 border-gray-200">
+                    Inativo
+                  </Badge>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </>
   )
 }
