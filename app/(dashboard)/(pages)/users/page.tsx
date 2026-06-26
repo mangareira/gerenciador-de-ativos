@@ -11,6 +11,7 @@ import { UserPlus } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useGetDepartments } from "@/utils/hooks/department/useGetDepartments";
+import { AddUserModal } from "@/components/users/addUserModal";
 
 export default function UsersPage() {
 
@@ -57,10 +58,7 @@ export default function UsersPage() {
         </TabsList>
         <TabsContent value="users" className="space-y-6">
           <div className="flex justify-end">
-            <Button>
-              <UserPlus className="mr-2 h-4 w-4" />
-              Novo Usuário
-            </Button>
+            <AddUserModal departmentOptions={departmentOptions} />
           </div>
           <SearchTool
             onSearchChange={setSearchTerm}

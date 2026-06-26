@@ -21,8 +21,6 @@ export const EditUserModal = ({ user, triggerButton, departmentOptions }: UserMo
   const [open, setOpen] = useState(false)
   const { mutate, isPending } = useUpdateUser(user.id)
 
-  console.log();
-
 
   const form = useForm<UpdateUser>({
     resolver: zodResolver(UpdateUserSchema),
