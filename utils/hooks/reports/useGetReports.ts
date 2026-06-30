@@ -9,9 +9,9 @@ export const useGetReports = () => {
     queryFn: async () => {
       const response = await client.api.report['get-reports'].$get();
       if (!response.ok) {
-        const error = await response.json()
-        toast.error(error.error || "Erro ao buscar tickets")
-        return
+        const error = await response.json() as { error?: string; message?: string };
+        toast.error(error.error ?? error.message ?? "Erro ao buscar tickets");
+        return;
       }
       const data = await response.json();
       return ReportSchema.parse(data);

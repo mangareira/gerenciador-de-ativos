@@ -14,8 +14,8 @@ export const useUpdateContract = (id: string) => {
       });
 
       if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error.error || "Erro ao atualizar contrato");
+        const error = await res.json() as { error?: string; message?: string };
+        throw new Error(error.error || error.message || "Erro ao atualizar contrato");
       }
     },
     onSuccess: () => {

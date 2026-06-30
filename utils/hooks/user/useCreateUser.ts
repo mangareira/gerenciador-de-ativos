@@ -13,10 +13,10 @@ export const useCreateUser = () => {
       });
 
       if (!res.ok) {
-        const error = await res.json() as { error?: string; message?: string };
-        throw new Error(error.error || error.message || "Erro ao criar usuário");
+        const error = await res.json() as { error?: string; message?: string }
+        toast.error(error.error || error.message || "Erro ao buscar tickets")
+        return
       }
-
       return res.json();
     },
     onSuccess: () => {

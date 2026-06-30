@@ -22,7 +22,8 @@ export const useRenewLicense = (licenseId: string) => {
 
       if (!res.ok) {
         const error = await res.json();
-        throw new Error(error.error || "Erro ao atualizar licença");
+        const message = "error" in error ? error.error : error.message;
+        throw new Error(message || "Erro ao atualizar licença");
       }
 
       return await res.json();

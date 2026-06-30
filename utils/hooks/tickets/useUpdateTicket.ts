@@ -15,8 +15,9 @@ export const useUpdateTicket = (ticketId: string) => {
       })
 
       if (!res.ok) {
-        const error = await res.json()
-        throw new Error(error.error || "Erro ao atualizar ticket")
+        const error = await res.json() as { error?: string; message?: string }
+        toast.error(error.error || error.message || "Erro ao buscar tickets")
+        return
       }
     },
     onSuccess: () => {

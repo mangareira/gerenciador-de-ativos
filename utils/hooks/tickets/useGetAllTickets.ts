@@ -10,8 +10,8 @@ export const useGetAllTickets = () => {
       const res = await client.api.ticket["get-all"].$get()
 
       if (!res.ok) {
-          const error = await res.json()
-          toast.error(error.error || "Erro ao buscar tickets")
+          const error = await res.json() as { error?: string; message?: string }
+          toast.error(error.error || error.message || "Erro ao buscar tickets")
           return
       }
 

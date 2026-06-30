@@ -8,7 +8,7 @@ export const useGetTicket = (id: string) => {
     enabled: !!id,
     queryKey: ["ticket", id],
     queryFn: async () => {
-      
+
       const res = await client.api.ticket["get-by-id"][":id"].$get({
         param: {
           id,
@@ -16,8 +16,8 @@ export const useGetTicket = (id: string) => {
       })
 
       if (!res.ok) {
-        const error = await res.json()
-        toast.error(error.error || "Erro ao buscar tickets")
+        const error = await res.json() as { error?: string; message?: string }
+        toast.error(error.error || error.message || "Erro ao buscar tickets")
         return
       }
 

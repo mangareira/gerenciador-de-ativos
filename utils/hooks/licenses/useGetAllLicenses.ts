@@ -11,7 +11,8 @@ export const useGetAllLicenses = () => {
 
       if (!res.ok) {
         const error = await res.json();
-        toast.error(error.error || "Erro ao buscar licenças");
+        const message = "error" in error ? error.error : error.message;
+        toast.error(message || "Erro ao buscar licenças");
         return;
       }
 

@@ -15,15 +15,16 @@ export const useAllocateUserLicense = (licenseId: string) => {
         json: data
       })
 
+      const payload = await res.json() as { error?: string; message?: string }
+
       if (!res.ok) {
-        const error = await res.json()
-        throw new Error(error.error || "Erro ao atualizar ticket")
+        throw new Error(payload.error || "Erro ao atualizar ticket")
       }
 
-      return (await res.json()).message
+      return payload.message ?? ""
     },
 
-    onSuccess:(data) => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["licenses"] })
       queryClient.invalidateQueries({ queryKey: ["license", licenseId] })
 

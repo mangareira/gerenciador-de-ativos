@@ -16,7 +16,7 @@ export const useGetContract = (id: string) => {
 
       if (!res.ok) {
         const error = await res.json();
-        toast.error(error.error || "Erro ao buscar contrato");
+        toast.error((error as { error?: string; message?: string }).error || (error as { error?: string; message?: string }).message || "Erro ao buscar contrato");
         return;
       }
 
